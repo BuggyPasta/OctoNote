@@ -52,8 +52,14 @@ document.getElementById('userSwitchButton').addEventListener('click', () => {
 });
 
 // Note action buttons
-document.getElementById('backButton').addEventListener('click', saveNote);
-document.getElementById('saveButton').addEventListener('click', saveNote);
+document.getElementById('backButton').addEventListener('click', () => {
+    saveNote();
+});
+
+document.getElementById('saveButton').addEventListener('click', () => {
+    saveNote();
+});
+
 document.getElementById('discardButton').addEventListener('click', discardChanges);
 document.getElementById('reloadButton').addEventListener('click', reloadNote);
 document.getElementById('printButton').addEventListener('click', printNote);
@@ -215,7 +221,11 @@ async function loadNotes() {
         console.log('Loaded notes:', notes);
         
         if (notes.length === 0) {
-            notesList.innerHTML = '<p class="no-notes">No notes yet. Use the menu to create one!</p>';
+            notesList.innerHTML = `
+                <div class="no-notes">
+                    <p>No notes yet.</p>
+                    <p>Use the menu to create one!</p>
+                </div>`;
             return;
         }
         
@@ -308,6 +318,8 @@ async function saveNote() {
         const title = document.getElementById('noteTitle').value;
         const content = document.getElementById('noteContent').value;
 
+        console.log('Saving note:', { id: currentNoteId, title, content });
+
         const response = await fetch(`/api/notes/${currentNoteId}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
@@ -328,7 +340,21 @@ async function saveNote() {
         }
 
         showFeedback('Note saved successfully', 'success');
-        await backToList();
+        
+        // Release the lock
+        await fetch(`/api/notes/${currentNoteId}/unlock`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ user: currentUser })
+        });
+
+        // Return to notes list
+        currentNoteId = null;
+        noteEditor.classList.add('hidden');
+        notesList.classList.remove('hidden');
+        await loadNotes();
     } catch (error) {
         console.error('Error saving note:', error);
         showFeedback(error.message, 'error');

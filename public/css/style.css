@@ -406,11 +406,15 @@ header {
     font-size: 18px;
     background: var(--card-background);
     border-radius: 8px;
-    margin: 20px 0;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 80%;
     max-width: 400px;
+    line-height: 1.6;
+}
+
+.no-notes p {
+    margin: 10px 0;
 } 
