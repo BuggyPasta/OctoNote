@@ -14,10 +14,12 @@ const noteContent = document.getElementById('noteContent');
 const noteMeta = document.getElementById('noteMeta');
 const userModal = document.getElementById('userModal');
 const statusModal = document.getElementById('statusModal');
+const homeButton = document.getElementById('homeButton');
 
 // Event Listeners
 document.addEventListener('DOMContentLoaded', initializeApp);
 menuButton.addEventListener('click', toggleMenu);
+homeButton.addEventListener('click', goHome);
 document.getElementById('newNoteButton').addEventListener('click', createNewNote);
 document.getElementById('statusButton').addEventListener('click', showStatus);
 document.getElementById('userSwitchButton').addEventListener('click', showUserModal);
@@ -50,8 +52,24 @@ function toggleMenu() {
     menu.classList.toggle('hidden');
 }
 
+// Close menu when clicking outside
+document.addEventListener('click', (event) => {
+    if (!menu.contains(event.target) && event.target !== menuButton) {
+        menu.classList.add('hidden');
+    }
+});
+
+// Home button functionality
+function goHome() {
+    menu.classList.add('hidden');
+    noteEditor.classList.add('hidden');
+    notesList.classList.remove('hidden');
+    loadNotes();
+}
+
 // User management
 function showUserModal() {
+    menu.classList.add('hidden');
     userModal.classList.remove('hidden');
     loadExistingUsers();
 }
@@ -62,7 +80,7 @@ async function loadExistingUsers() {
         const users = await response.json();
         const existingUsers = document.getElementById('existingUsers');
         existingUsers.innerHTML = users.map(user => `
-            <button onclick="selectUser('${user}')">
+            <button class="user-button" onclick="selectUser('${user}')">
                 ${user}
             </button>
         `).join('');
@@ -162,8 +180,11 @@ async function saveNote() {
     if (!currentNote) return;
 
     try {
-        const response = await fetch(`/api/notes/${currentNote.id}`, {
-            method: 'PUT',
+        const method = currentNote.id ? 'PUT' : 'POST';
+        const url = currentNote.id ? `/api/notes/${currentNote.id}` : '/api/notes';
+        
+        const response = await fetch(url, {
+            method: method,
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 title: noteTitle.value,
@@ -173,6 +194,10 @@ async function saveNote() {
         });
 
         if (response.ok) {
+            const data = await response.json();
+            if (!currentNote.id) {
+                currentNote.id = data.id;
+            }
             showFeedback('Note saved successfully', 'success');
             loadNotes(); // Refresh the list
         } else {
@@ -191,6 +216,10 @@ function discardChanges() {
 }
 
 function backToList() {
+    if (currentNote && !currentNote.id) {
+        // If it's a new note, save it before going back
+        saveNote();
+    }
     noteEditor.classList.add('hidden');
     notesList.classList.remove('hidden');
     currentNote = null;
@@ -290,20 +319,31 @@ async function shareNote() {
 
 async function showStatus() {
     try {
+        menu.classList.add('hidden');
         const response = await fetch('/api/status');
         const status = await response.json();
         const statusContent = document.getElementById('statusContent');
         statusContent.innerHTML = `
-            <p>Server Status: ${status.status}</p>
-            <p>Uptime: ${status.uptime}</p>
-            <p>Memory Usage: ${status.memory}</p>
-            <p>Active Users: ${status.activeUsers}</p>
-            <p>Total Notes: ${status.totalNotes}</p>
+            <div class="status-header">
+                <h2>System Status</h2>
+                <button class="close-button" onclick="closeStatusModal()">×</button>
+            </div>
+            <div class="status-info">
+                <p>Server Status: ${status.status}</p>
+                <p>Uptime: ${status.uptime}</p>
+                <p>Memory Usage: ${status.memory}</p>
+                <p>Active Users: ${status.activeUsers}</p>
+                <p>Total Notes: ${status.totalNotes}</p>
+            </div>
         `;
         statusModal.classList.remove('hidden');
     } catch (error) {
         showFeedback('Error loading status', 'error');
     }
+}
+
+function closeStatusModal() {
+    statusModal.classList.add('hidden');
 }
 
 // Utility functions
@@ -316,6 +356,7 @@ function formatDate(dateString) {
         year: 'numeric',
         hour: '2-digit',
         minute: '2-digit',
+        hour12: false,
         timeZoneName: 'short'
     });
 }
