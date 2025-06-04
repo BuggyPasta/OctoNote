@@ -225,7 +225,7 @@ header {
     width: 100%;
     margin-top: 10px;
     background: none;
-    color: var(--primary-color);
+    color: var(--text-color);
     border: none;
     border-radius: 4px;
     padding: 12px;
@@ -250,7 +250,6 @@ header {
 .copy-button::after {
     content: "Copy";
     font-size: 0.8em;
-    color: var(--text-color);
 }
 
 .note-content {
@@ -489,8 +488,13 @@ header {
         padding: 20px;
     }
 
+    .note-card {
+        text-align: center;
+    }
+    
     .note-card h3 {
         text-align: center;
+        width: 100%;
     }
 }
 

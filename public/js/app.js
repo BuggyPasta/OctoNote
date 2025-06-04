@@ -507,18 +507,34 @@ function copyNoteContent() {
     const content = document.getElementById('noteContent').value;
     const textToCopy = `${title}\n\n${content}`;
     
-    navigator.clipboard.writeText(textToCopy).then(() => {
-        showFeedback('Note content copied to clipboard', 'success');
-    }).catch(() => {
+    // Use the modern clipboard API
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(textToCopy)
+            .then(() => {
+                showFeedback('Note content copied to clipboard', 'success');
+            })
+            .catch(() => {
+                // Fallback for clipboard API failure
+                fallbackCopy();
+            });
+    } else {
         // Fallback for browsers that don't support clipboard API
-        const textArea = document.createElement('textarea');
-        textArea.value = textToCopy;
-        document.body.appendChild(textArea);
-        textArea.select();
+        fallbackCopy();
+    }
+}
+
+function fallbackCopy() {
+    const textArea = document.createElement('textarea');
+    textArea.value = `${document.getElementById('noteTitle').value}\n\n${document.getElementById('noteContent').value}`;
+    document.body.appendChild(textArea);
+    textArea.select();
+    try {
         document.execCommand('copy');
-        document.body.removeChild(textArea);
         showFeedback('Note content copied to clipboard', 'success');
-    });
+    } catch (err) {
+        showFeedback('Failed to copy note content', 'error');
+    }
+    document.body.removeChild(textArea);
 }
 
 async function showStatus() {
