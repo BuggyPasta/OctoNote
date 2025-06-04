@@ -16,10 +16,22 @@ const PORT = process.env.PORT || 51828;
 // Middleware
 app.use(express.json());
 
-// Configure static file serving with explicit MIME types
-app.use(express.static(path.join(__dirname, '../public'), {
-    setHeaders: (res, path) => {
-        if (path.endsWith('.css')) {
+// Detailed logging for static file requests
+app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+    console.log('Request headers:', req.headers);
+    next();
+});
+
+// Serve static files with detailed logging
+const publicPath = path.join(__dirname, '../public');
+console.log('Serving static files from:', publicPath);
+
+app.use(express.static(publicPath, {
+    setHeaders: (res, filePath) => {
+        console.log('Serving static file:', filePath);
+        if (filePath.endsWith('.css')) {
+            console.log('Setting CSS content type for:', filePath);
             res.setHeader('Content-Type', 'text/css');
         }
     }
@@ -27,7 +39,7 @@ app.use(express.static(path.join(__dirname, '../public'), {
 
 // Logging middleware
 app.use((req, res, next) => {
-    console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} - Response status: ${res.statusCode}`);
     next();
 });
 
@@ -54,6 +66,11 @@ async function startServer() {
         const dataDir = '/data/octonote';
         const notesDir = path.join(dataDir, 'notes');
         const usersFile = path.join(dataDir, 'users.txt');
+
+        // Log directory structure
+        console.log('Current working directory:', process.cwd());
+        console.log('Directory contents:', await fs.readdir(process.cwd()));
+        console.log('Public directory contents:', await fs.readdir(publicPath));
 
         try {
             await fs.access(dataDir);
