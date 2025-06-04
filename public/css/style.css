@@ -41,9 +41,24 @@ header {
     margin-bottom: 20px;
 }
 
-header h1 {
-    font-size: 24px;
+.logo-button, .menu-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
     color: var(--primary-color);
+}
+
+.logo-button:hover, .menu-button:hover {
+    background-color: rgba(33, 150, 243, 0.1);
+}
+
+.logo-button img, .menu-button img {
+    width: 32px;
+    height: 32px;
+    display: block;
 }
 
 /* Menu */
@@ -82,6 +97,7 @@ header h1 {
     width: 20px;
     height: 20px;
     margin-right: 10px;
+    color: var(--primary-color);
 }
 
 /* Notes List */
@@ -153,15 +169,17 @@ header h1 {
     padding: 8px;
     border-radius: 4px;
     transition: background-color 0.2s;
+    color: var(--primary-color);
 }
 
 .action-button:hover {
-    background-color: var(--background-color);
+    background-color: rgba(33, 150, 243, 0.1);
 }
 
 .action-button img {
     width: 20px;
     height: 20px;
+    display: block;
 }
 
 .note-meta {
@@ -320,14 +338,13 @@ header h1 {
 .feedback {
     position: fixed;
     bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 12px 24px;
+    right: 20px;
+    padding: 15px 25px;
     border-radius: 4px;
     color: white;
     font-weight: 500;
-    z-index: 1000;
     animation: slideUp 0.3s ease-out;
+    z-index: 1000;
 }
 
 .feedback.error {
@@ -344,11 +361,11 @@ header h1 {
 
 @keyframes slideUp {
     from {
-        transform: translate(-50%, 100%);
+        transform: translateY(100%);
         opacity: 0;
     }
     to {
-        transform: translate(-50%, 0);
+        transform: translateY(0);
         opacity: 1;
     }
 }
@@ -358,21 +375,20 @@ header h1 {
     .app-container {
         padding: 10px;
     }
-
+    
     .notes-list {
         grid-template-columns: 1fr;
     }
-
+    
     .note-header {
         flex-direction: column;
         gap: 10px;
     }
-
+    
     .note-actions {
-        width: 100%;
-        justify-content: space-between;
+        flex-wrap: wrap;
     }
-
+    
     .modal-content {
         width: 95%;
         padding: 20px;

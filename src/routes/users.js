@@ -9,7 +9,9 @@ const USERS_FILE = '/data/octonote/users.txt';
 async function readUsers() {
     try {
         const content = await fs.readFile(USERS_FILE, 'utf8');
-        return content.split('\n').filter(user => user.trim());
+        const users = content.split('\n').filter(user => user.trim());
+        console.log('Read users:', users);
+        return users;
     } catch (error) {
         console.error('Error reading users:', error);
         return [];
@@ -19,7 +21,9 @@ async function readUsers() {
 // Helper function to write users
 async function writeUsers(users) {
     try {
+        console.log('Writing users:', users);
         await fs.writeFile(USERS_FILE, users.join('\n'), 'utf8');
+        console.log('Users written successfully');
     } catch (error) {
         console.error('Error writing users:', error);
         throw error;
@@ -30,6 +34,7 @@ async function writeUsers(users) {
 router.get('/', async (req, res) => {
     try {
         const users = await readUsers();
+        console.log('Returning users:', users);
         res.json(users);
     } catch (error) {
         console.error('Error getting users:', error);
@@ -41,17 +46,22 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
     try {
         const { name } = req.body;
+        console.log('Creating user:', name);
+        
         if (!name) {
+            console.log('Name is required');
             return res.status(400).json({ error: 'Name is required' });
         }
 
         const users = await readUsers();
         if (users.includes(name)) {
+            console.log('User already exists:', name);
             return res.status(400).json({ error: 'User already exists' });
         }
 
         users.push(name);
         await writeUsers(users);
+        console.log('User created successfully:', name);
         res.status(201).json({ message: 'User created successfully' });
     } catch (error) {
         console.error('Error creating user:', error);
@@ -63,16 +73,21 @@ router.post('/', async (req, res) => {
 router.delete('/:name', async (req, res) => {
     try {
         const name = req.params.name;
+        console.log('Deleting user:', name);
+        
         const users = await readUsers();
         const filteredUsers = users.filter(user => user !== name);
         
         if (filteredUsers.length === users.length) {
+            console.log('User not found:', name);
             return res.status(404).json({ error: 'User not found' });
         }
 
         await writeUsers(filteredUsers);
+        console.log('User deleted successfully:', name);
         res.json({ success: true });
     } catch (error) {
+        console.error('Error deleting user:', error);
         res.status(500).json({ error: 'Error deleting user' });
     }
 });
