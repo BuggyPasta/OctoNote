@@ -11,7 +11,6 @@ services:
       - /home/alex/docker_backup/octonote:/data/octonote
     environment:
       - NODE_ENV=production
-    user: "node"
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:51828/api/status"]
       interval: 30s
@@ -20,10 +19,6 @@ services:
       start_period: 10s
     networks:
       - octonote_network
-
-volumes:
-  octonote_data:
-    name: octonote_data
 
 networks:
   octonote_network:
