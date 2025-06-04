@@ -12,7 +12,7 @@ const statusRouter = require('./routes/status');
 
 // Initialize Express app
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 51828;
 
 // Middleware
 app.use(express.json());
