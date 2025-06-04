@@ -456,7 +456,7 @@ async function createNewNote() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 title: 'Untitled Note',
-                content: '',
+                content: ' ',
                 user: currentUser
             })
         });
