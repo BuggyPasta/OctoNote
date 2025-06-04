@@ -149,6 +149,15 @@ async function createUser() {
 }
 
 function selectUser(name) {
+    // Release any existing note lock when switching users
+    if (currentNote && currentNote.id) {
+        fetch(`/api/notes/${currentNote.id}/unlock`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user: currentUser })
+        }).catch(error => console.error('Error releasing note lock:', error));
+    }
+    
     currentUser = name;
     localStorage.setItem('octonote_user', name);
     userModal.classList.add('hidden');
@@ -194,6 +203,20 @@ async function openNote(noteId) {
         }
 
         const note = await response.json();
+        
+        // Try to acquire the note lock
+        const lockResponse = await fetch(`/api/notes/${noteId}/lock`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user: currentUser })
+        });
+
+        if (!lockResponse.ok) {
+            const lockData = await lockResponse.json();
+            showFeedback(`This note is being edited by ${lockData.user || 'another user'}`, 'warning');
+            return;
+        }
+
         currentNote = note;
         noteTitle.value = note.title;
         noteContent.value = note.content;
@@ -272,6 +295,14 @@ function backToList() {
             showFeedback('Note not saved. Please try again.', 'error');
         });
     } else {
+        // Release the note lock when going back
+        if (currentNote && currentNote.id) {
+            fetch(`/api/notes/${currentNote.id}/unlock`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user: currentUser })
+            }).catch(error => console.error('Error releasing note lock:', error));
+        }
         noteEditor.classList.add('hidden');
         notesList.classList.remove('hidden');
         currentNote = null;

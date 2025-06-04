@@ -292,7 +292,7 @@ main {
     border: 1px solid #ddd;
     border-radius: 4px;
     cursor: pointer;
-    text-align: left;
+    text-align: center;
 }
 
 .user-button:hover {
