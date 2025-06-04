@@ -20,9 +20,14 @@ const homeButton = document.getElementById('homeButton');
 document.addEventListener('DOMContentLoaded', initializeApp);
 menuButton.addEventListener('click', toggleMenu);
 homeButton.addEventListener('click', goHome);
+
+// Menu buttons
 document.getElementById('newNoteButton').addEventListener('click', createNewNote);
 document.getElementById('statusButton').addEventListener('click', showStatus);
-document.getElementById('userSwitchButton').addEventListener('click', showUserModal);
+document.getElementById('userSwitchButton').addEventListener('click', () => {
+    menu.classList.add('hidden');
+    showUserModal();
+});
 
 // Note action buttons
 document.getElementById('backButton').addEventListener('click', backToList);
@@ -140,11 +145,19 @@ async function loadNotes() {
         const response = await fetch('/api/notes');
         const notes = await response.json();
         notesList.innerHTML = notes.map(note => `
-            <div class="note-card" onclick="openNote('${note.id}')">
+            <div class="note-card" data-note-id="${note.id}">
                 <h3>${note.title}</h3>
                 <p>Last edited by ${note.lastEditedBy} on ${formatDate(note.lastEdited)}</p>
             </div>
         `).join('');
+
+        // Add click handlers to note cards
+        document.querySelectorAll('.note-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const noteId = card.dataset.noteId;
+                openNote(noteId);
+            });
+        });
     } catch (error) {
         showFeedback('Error loading notes', 'error');
     }
@@ -356,17 +369,26 @@ function closeStatusModal() {
 
 // Utility functions
 function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleString('en-US', {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false,
-        timeZoneName: 'short'
-    });
+    try {
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) {
+            return 'Invalid date';
+        }
+        
+        const options = {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        };
+        
+        return new Intl.DateTimeFormat('en-US', options).format(date);
+    } catch (error) {
+        console.error('Error formatting date:', error);
+        return 'Invalid date';
+    }
 }
 
 function showFeedback(message, type) {
