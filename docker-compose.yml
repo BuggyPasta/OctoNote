@@ -8,7 +8,7 @@ services:
     ports:
       - "51828:51828"
     volumes:
-      - octonote_data:/data/octonote
+      - /home/alex/docker_backup/octonote:/data/octonote
     environment:
       - NODE_ENV=production
     user: "node"
