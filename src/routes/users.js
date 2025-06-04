@@ -5,44 +5,30 @@ const path = require('path');
 
 const USERS_FILE = '/data/octonote/users.txt';
 
-// Helper function to read users file
+// Helper function to read users
 async function readUsers() {
     try {
         const content = await fs.readFile(USERS_FILE, 'utf8');
-        return content.split('\n').filter(Boolean);
+        return content.split('\n').filter(user => user.trim());
     } catch (error) {
-        console.error('Error reading users file:', error);
         if (error.code === 'ENOENT') {
-            // If file doesn't exist, create it
-            try {
-                await fs.writeFile(USERS_FILE, '', 'utf8');
-                console.log('Created new users.txt file');
-                return [];
-            } catch (writeError) {
-                console.error('Error creating users file:', writeError);
-                throw new Error('Could not create users file. Please check permissions.');
-            }
+            // File doesn't exist yet, return empty array
+            return [];
         }
-        throw error; // Re-throw other errors
+        console.error('Error reading users file:', error);
+        throw error;
     }
 }
 
-// Helper function to write users file
+// Helper function to write users
 async function writeUsers(users) {
     try {
-        // First check if we can write to the file
-        try {
-            await fs.access(USERS_FILE, fs.constants.W_OK);
-        } catch (error) {
-            console.error('No write permission for users file:', error);
-            throw new Error('No permission to write to users file');
-        }
-
-        // Write the file
-        await fs.writeFile(USERS_FILE, users.join('\n') + '\n', 'utf8');
+        // Ensure the directory exists
+        await fs.mkdir(path.dirname(USERS_FILE), { recursive: true });
+        await fs.writeFile(USERS_FILE, users.join('\n'), 'utf8');
     } catch (error) {
         console.error('Error writing users file:', error);
-        throw error; // Re-throw to be handled by the route
+        throw error;
     }
 }
 
@@ -52,7 +38,8 @@ router.get('/', async (req, res) => {
         const users = await readUsers();
         res.json(users);
     } catch (error) {
-        res.status(500).json({ error: 'Error reading users' });
+        console.error('Error getting users:', error);
+        res.status(500).json({ error: 'Error getting users' });
     }
 });
 
@@ -64,38 +51,17 @@ router.post('/', async (req, res) => {
             return res.status(400).json({ error: 'Name is required' });
         }
 
-        // Sanitize and validate name
-        const sanitizedName = name.trim();
-        if (sanitizedName.length < 2 || sanitizedName.length > 50) {
-            return res.status(400).json({ error: 'Name must be between 2 and 50 characters' });
-        }
-
-        // Check for invalid characters
-        if (!/^[a-zA-Z0-9\s\-_]+$/.test(sanitizedName)) {
-            return res.status(400).json({ error: 'Name contains invalid characters' });
-        }
-
         const users = await readUsers();
-        
-        // Check if name already exists (case-insensitive)
-        if (users.some(user => user.toLowerCase() === sanitizedName.toLowerCase())) {
-            return res.status(409).json({ error: 'This name is already taken, please choose a different one.' });
+        if (users.includes(name)) {
+            return res.status(400).json({ error: 'User already exists' });
         }
 
-        users.push(sanitizedName);
+        users.push(name);
         await writeUsers(users);
-        res.status(201).json({ name: sanitizedName });
+        res.status(201).json({ message: 'User created successfully' });
     } catch (error) {
         console.error('Error creating user:', error);
-        // Check if it's a permission error
-        if (error.code === 'EACCES') {
-            return res.status(500).json({ error: 'Permission denied when creating user. Please check directory permissions.' });
-        }
-        // Check if it's a file system error
-        if (error.code === 'ENOENT') {
-            return res.status(500).json({ error: 'Users file not found. Please check if the data directory exists.' });
-        }
-        res.status(500).json({ error: `Error creating user: ${error.message}` });
+        res.status(500).json({ error: 'Error creating user' });
     }
 });
 
@@ -113,6 +79,7 @@ router.delete('/:name', async (req, res) => {
         await writeUsers(filteredUsers);
         res.json({ success: true });
     } catch (error) {
+        console.error('Error deleting user:', error);
         res.status(500).json({ error: 'Error deleting user' });
     }
 });
