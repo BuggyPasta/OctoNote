@@ -21,7 +21,6 @@ menuButton.addEventListener('click', toggleMenu);
 document.getElementById('newNoteButton').addEventListener('click', createNewNote);
 document.getElementById('statusButton').addEventListener('click', showStatus);
 document.getElementById('userSwitchButton').addEventListener('click', showUserModal);
-document.getElementById('createUserButton').addEventListener('click', createUser);
 
 // Note action buttons
 document.getElementById('backButton').addEventListener('click', backToList);
@@ -33,6 +32,9 @@ document.getElementById('shareButton').addEventListener('click', shareNote);
 
 // Initialize the app
 async function initializeApp() {
+    // Add createUserButton event listener after DOM is loaded
+    document.getElementById('createUserButton').addEventListener('click', createUser);
+    
     // Check for existing user in localStorage
     const savedUser = localStorage.getItem('octonote_user');
     if (savedUser) {
