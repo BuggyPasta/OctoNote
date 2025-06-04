@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OctoNote</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" type="image/svg+xml" href="/icons/octonote.svg">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="/icons/octonote.svg" alt="OctoNote Logo">
+        </div>
+        <button id="menuButton" class="menu-button">
+            <img src="/icons/menu.svg" alt="Menu">
+        </button>
+    </header>
+
+    <div id="menu" class="menu hidden">
+        <button id="newNoteButton">
+            <img src="/icons/new.svg" alt="New Note">
+            Create New Note
+        </button>
+        <button id="statusButton">
+            <img src="/icons/status.svg" alt="Status">
+            Status
+        </button>
+        <button id="userSwitchButton">
+            <img src="/icons/user.svg" alt="Switch User">
+            Switch User
+        </button>
+    </div>
+
+    <main>
+        <div id="notesList" class="notes-list">
+            <!-- Notes will be populated here -->
+        </div>
+
+        <div id="noteEditor" class="note-editor hidden">
+            <div class="note-header">
+                <input type="text" id="noteTitle" placeholder="Note Title">
+                <div id="noteMeta"></div>
+            </div>
+            <textarea id="noteContent" placeholder="Start writing..."></textarea>
+            <div class="note-actions">
+                <button id="backButton">
+                    <img src="/icons/back.svg" alt="Back">
+                    Back
+                </button>
+                <button id="saveButton">
+                    <img src="/icons/save.svg" alt="Save">
+                    Save
+                </button>
+                <button id="discardButton">
+                    <img src="/icons/discard.svg" alt="Discard">
+                    Discard
+                </button>
+                <button id="reloadButton">
+                    <img src="/icons/reload.svg" alt="Reload">
+                    Reload
+                </button>
+                <button id="printButton">
+                    <img src="/icons/print.svg" alt="Print">
+                    Print
+                </button>
+                <button id="shareButton">
+                    <img src="/icons/share.svg" alt="Share">
+                    Share
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <div id="userModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Choose Your Name</h2>
+            <div id="existingUsers"></div>
+            <div class="new-user">
+                <input type="text" id="newUserName" placeholder="Enter new name">
+                <button id="createUserButton">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="statusModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>System Status</h2>
+            <div id="statusContent"></div>
+        </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+</body>
+</html> 
