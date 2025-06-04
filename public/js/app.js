@@ -30,6 +30,11 @@ homeButton.addEventListener('click', goHome);
 
 // Menu buttons
 document.getElementById('newNoteButton').addEventListener('click', () => {
+    if (!currentUser) {
+        showFeedback('Please select a user first', 'error');
+        showUserModal();
+        return;
+    }
     menu.classList.add('hidden');
     createNewNote();
 });
@@ -385,16 +390,14 @@ function formatDate(dateString) {
             return 'Invalid date';
         }
         
-        const options = {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false
-        };
+        // Use a consistent format across all devices
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
         
-        return new Intl.DateTimeFormat('en-US', options).format(date);
+        return `${year}-${month}-${day} ${hours}:${minutes}`;
     } catch (error) {
         console.error('Error formatting date:', error);
         return 'Invalid date';
