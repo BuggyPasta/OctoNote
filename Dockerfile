@@ -17,11 +17,8 @@ RUN echo '#!/bin/sh\n\
 mkdir -p /data/octonote/notes /data/octonote/logs\n\
 touch /data/octonote/users.txt\n\
 chown -R node:node /data/octonote\n\
-exec node src/server.js' > /app/start.sh && \
+exec su-exec node node src/server.js' > /app/start.sh && \
 chmod +x /app/start.sh
-
-# Switch to non-root user
-USER node
 
 # Expose port
 EXPOSE 51828
