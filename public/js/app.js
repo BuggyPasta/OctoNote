@@ -361,7 +361,35 @@ async function saveNote(shouldClose = false) {
 
 function discardChanges() {
     if (confirm('Are you sure you want to discard your changes?')) {
-        backToList();
+        // Clear any pending autosave
+        if (autosaveTimeout) {
+            clearTimeout(autosaveTimeout);
+            autosaveTimeout = null;
+        }
+
+        // Release the lock without saving
+        if (currentNoteId) {
+            fetch(`/api/notes/${currentNoteId}/unlock`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ user: currentUser })
+            }).catch(error => {
+                console.error('Error releasing note lock:', error);
+            }).finally(() => {
+                // Reset state and UI regardless of lock release success
+                currentNoteId = null;
+                noteEditor.classList.add('hidden');
+                notesList.classList.remove('hidden');
+                loadNotes();
+            });
+        } else {
+            // If no note was being edited, just reset the UI
+            noteEditor.classList.add('hidden');
+            notesList.classList.remove('hidden');
+            loadNotes();
+        }
     }
 }
 
