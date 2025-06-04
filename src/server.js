@@ -64,14 +64,24 @@ async function initializeLogger() {
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      scriptSrc: ["'self'"],
-      imgSrc: ["'self'", 'data:'],
-      connectSrc: ["'self'"]
+      defaultSrc: ["'self'", "http:", "https:"],
+      styleSrc: ["'self'", "'unsafe-inline'", "http:", "https:"],
+      scriptSrc: ["'self'", "http:", "https:"],
+      imgSrc: ["'self'", "data:", "http:", "https:"],
+      connectSrc: ["'self'", "http:", "https:"],
+      upgradeInsecureRequests: null
     }
   }
 }));
+
+// Redirect HTTPS to HTTP
+app.use((req, res, next) => {
+  if (req.secure) {
+    res.redirect(`http://${req.headers.host}${req.url}`);
+  } else {
+    next();
+  }
+});
 
 // Rate limiting
 const limiter = rateLimit({
