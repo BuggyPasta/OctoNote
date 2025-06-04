@@ -52,7 +52,7 @@ document.getElementById('userSwitchButton').addEventListener('click', () => {
 });
 
 // Note action buttons
-document.getElementById('backButton').addEventListener('click', backToList);
+document.getElementById('backButton').addEventListener('click', saveNote);
 document.getElementById('saveButton').addEventListener('click', saveNote);
 document.getElementById('discardButton').addEventListener('click', discardChanges);
 document.getElementById('reloadButton').addEventListener('click', reloadNote);
@@ -63,6 +63,9 @@ document.getElementById('shareButton').addEventListener('click', shareNote);
 async function initializeApp() {
     // Add createUserButton event listener after DOM is loaded
     document.getElementById('createUserButton').addEventListener('click', createUser);
+    
+    // Ensure note editor is hidden
+    noteEditor.classList.add('hidden');
     
     // Check for existing user in localStorage
     const savedUser = localStorage.getItem('octonote_user');
@@ -302,12 +305,15 @@ async function saveNote() {
     if (!currentNoteId) return;
 
     try {
+        const title = document.getElementById('noteTitle').value;
+        const content = document.getElementById('noteContent').value;
+
         const response = await fetch(`/api/notes/${currentNoteId}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                title: document.getElementById('noteTitle').value,
-                content: document.getElementById('noteContent').value,
+                title: title,
+                content: content,
                 user: currentUser
             })
         });
@@ -322,7 +328,7 @@ async function saveNote() {
         }
 
         showFeedback('Note saved successfully', 'success');
-        backToList(); // Return to the notes list after saving
+        await backToList();
     } catch (error) {
         console.error('Error saving note:', error);
         showFeedback(error.message, 'error');
@@ -338,9 +344,6 @@ function discardChanges() {
 async function backToList() {
     if (currentNoteId) {
         try {
-            // Save the note before going back
-            await saveNote();
-            
             // Release the lock when going back
             await fetch(`/api/notes/${currentNoteId}/unlock`, {
                 method: 'POST',
@@ -353,10 +356,11 @@ async function backToList() {
             console.error('Error releasing note lock:', error);
         }
     }
+    
     currentNoteId = null;
     noteEditor.classList.add('hidden');
     notesList.classList.remove('hidden');
-    loadNotes();
+    await loadNotes();
 }
 
 async function reloadNote() {
@@ -393,9 +397,8 @@ async function createNewNote() {
         currentNoteId = data.id;
         document.getElementById('noteTitle').value = 'New Note';
         document.getElementById('noteContent').value = '';
-        document.getElementById('noteView').style.display = 'block';
-        document.getElementById('notesList').style.display = 'none';
-        document.getElementById('newNoteBtn').style.display = 'none';
+        noteEditor.classList.remove('hidden');
+        notesList.classList.add('hidden');
         
         // Setup autosave
         setupAutosave();
