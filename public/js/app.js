@@ -212,7 +212,7 @@ async function loadNotes() {
         console.log('Loaded notes:', notes);
         
         if (notes.length === 0) {
-            notesList.innerHTML = '<p class="no-notes">No notes yet. Click the + button to create one!</p>';
+            notesList.innerHTML = '<p class="no-notes">No notes yet. Use the menu to create one!</p>';
             return;
         }
         
@@ -322,6 +322,7 @@ async function saveNote() {
         }
 
         showFeedback('Note saved successfully', 'success');
+        backToList(); // Return to the notes list after saving
     } catch (error) {
         console.error('Error saving note:', error);
         showFeedback(error.message, 'error');
@@ -337,6 +338,9 @@ function discardChanges() {
 async function backToList() {
     if (currentNoteId) {
         try {
+            // Save the note before going back
+            await saveNote();
+            
             // Release the lock when going back
             await fetch(`/api/notes/${currentNoteId}/unlock`, {
                 method: 'POST',
@@ -350,9 +354,8 @@ async function backToList() {
         }
     }
     currentNoteId = null;
-    document.getElementById('noteView').style.display = 'none';
-    document.getElementById('notesList').style.display = 'block';
-    document.getElementById('newNoteBtn').style.display = 'block';
+    noteEditor.classList.add('hidden');
+    notesList.classList.remove('hidden');
     loadNotes();
 }
 
