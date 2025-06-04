@@ -65,8 +65,9 @@ document.getElementById('saveButton').addEventListener('click', () => {
 
 document.getElementById('discardButton').addEventListener('click', discardChanges);
 document.getElementById('reloadButton').addEventListener('click', reloadNote);
-document.getElementById('printButton').addEventListener('click', printNote);
-document.getElementById('shareButton').addEventListener('click', shareNote);
+
+// Add copy button functionality
+document.getElementById('copyButton').addEventListener('click', copyNoteContent);
 
 // Initialize the app
 async function initializeApp() {
@@ -500,72 +501,24 @@ async function createNewNote() {
     }
 }
 
-// Print note
-async function printNote() {
-    if (!currentNoteId) return;
+// Copy note content
+function copyNoteContent() {
+    const title = noteTitle.value;
+    const content = noteContent.value;
+    const textToCopy = `${title}\n\n${content}`;
     
-    try {
-        const response = await fetch(`/api/notes/${currentNoteId}?user=${encodeURIComponent(currentUser)}`);
-        if (!response.ok) {
-            throw new Error('Failed to fetch note for printing');
-        }
-        
-        const note = await response.json();
-        const printWindow = window.open('', '_blank');
-        printWindow.document.write(`
-            <html>
-                <head>
-                    <title>${note.title}</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; padding: 20px; }
-                        h1 { margin-bottom: 20px; }
-                        .meta { color: #666; margin-bottom: 20px; }
-                        .content { white-space: pre-wrap; }
-                    </style>
-                </head>
-                <body>
-                    <h1>${note.title}</h1>
-                    <div class="meta">Last edited by ${note.lastEditedBy} on ${formatDate(note.lastEdited)}</div>
-                    <div class="content">${note.content}</div>
-                </body>
-            </html>
-        `);
-        printWindow.document.close();
-        printWindow.print();
-    } catch (error) {
-        console.error('Error printing note:', error);
-        showFeedback('Error printing note', 'error');
-    }
-}
-
-// Share note
-async function shareNote() {
-    if (!currentNote) return;
-    
-    try {
-        const shareData = {
-            title: currentNote.title,
-            text: currentNote.content,
-            url: window.location.href
-        };
-
-        if (navigator.share) {
-            await navigator.share(shareData);
-        } else {
-            // Fallback for browsers that don't support the Web Share API
-            const textArea = document.createElement('textarea');
-            textArea.value = `${currentNote.title}\n\n${currentNote.content}`;
-            document.body.appendChild(textArea);
-            textArea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textArea);
-            showFeedback('Note content copied to clipboard', 'success');
-        }
-    } catch (error) {
-        if (error.name !== 'AbortError') {
-            showFeedback('Error sharing note', 'error');
-        }
-    }
+    navigator.clipboard.writeText(textToCopy).then(() => {
+        showFeedback('Note content copied to clipboard', 'success');
+    }).catch(() => {
+        // Fallback for browsers that don't support clipboard API
+        const textArea = document.createElement('textarea');
+        textArea.value = textToCopy;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        showFeedback('Note content copied to clipboard', 'success');
+    });
 }
 
 async function showStatus() {

@@ -138,6 +138,10 @@ header {
     text-align: center;
     margin: 0 0 10px 0;
     font-size: 1.2em;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .note-meta {
@@ -180,6 +184,8 @@ header {
 .note-actions {
     display: flex;
     gap: 10px;
+    flex-wrap: wrap;
+    justify-content: space-between;
 }
 
 .action-button {
@@ -190,6 +196,11 @@ header {
     border-radius: 4px;
     transition: background-color 0.2s;
     color: var(--primary-color);
+    flex: 1;
+    min-width: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .action-button:hover {
@@ -197,9 +208,35 @@ header {
 }
 
 .action-button img {
+    width: 24px;
+    height: 24px;
+    display: block;
+}
+
+.copy-button {
+    width: 100%;
+    margin-top: 10px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 12px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s;
+}
+
+.copy-button:hover {
+    background-color: var(--secondary-color);
+}
+
+.copy-button img {
     width: 20px;
     height: 20px;
-    display: block;
+    filter: brightness(0) invert(1);
 }
 
 .note-content {
@@ -402,7 +439,15 @@ header {
     }
     
     .note-actions {
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        margin-top: 15px;
+    }
+    
+    .action-button {
+        width: 100%;
+        padding: 12px;
     }
     
     .modal-content {

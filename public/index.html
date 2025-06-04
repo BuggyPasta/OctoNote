@@ -40,35 +40,26 @@
         </div>
 
         <div id="noteEditor" class="note-editor hidden">
-            <div class="note-header">
+            <div class="note-view">
                 <input type="text" id="noteTitle" class="note-title" placeholder="Note Title">
-                <div id="noteMeta" class="note-meta"></div>
-            </div>
-            <textarea id="noteContent" class="note-content" placeholder="Start writing..."></textarea>
-            <div class="note-actions">
-                <button id="backButton" class="action-button">
-                    <img src="/icons/back.svg" alt="Back">
-                    Back
-                </button>
-                <button id="saveButton" class="action-button">
-                    <img src="/icons/save.svg" alt="Save">
-                    Save
-                </button>
-                <button id="discardButton" class="action-button">
-                    <img src="/icons/discard.svg" alt="Discard">
-                    Discard
-                </button>
-                <button id="reloadButton" class="action-button">
-                    <img src="/icons/reload.svg" alt="Reload">
-                    Reload
-                </button>
-                <button id="printButton" class="action-button">
-                    <img src="/icons/print.svg" alt="Print">
-                    Print
-                </button>
-                <button id="shareButton" class="action-button">
-                    <img src="/icons/share.svg" alt="Share">
-                    Share
+                <textarea id="noteContent" class="note-content" placeholder="Start writing your note here..."></textarea>
+                <div class="note-actions">
+                    <button id="backButton" class="action-button" title="Back">
+                        <img src="/icons/back.svg" alt="Back">
+                    </button>
+                    <button id="saveButton" class="action-button" title="Save">
+                        <img src="/icons/save.svg" alt="Save">
+                    </button>
+                    <button id="discardButton" class="action-button" title="Discard">
+                        <img src="/icons/discard.svg" alt="Discard">
+                    </button>
+                    <button id="reloadButton" class="action-button" title="Reload">
+                        <img src="/icons/reload.svg" alt="Reload">
+                    </button>
+                </div>
+                <button id="copyButton" class="copy-button">
+                    <img src="/icons/copy.svg" alt="Copy">
+                    Copy
                 </button>
             </div>
         </div>
