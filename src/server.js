@@ -15,7 +15,15 @@ const PORT = process.env.PORT || 51828;
 
 // Middleware
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '../public')));
+
+// Configure static file serving with explicit MIME types
+app.use(express.static(path.join(__dirname, '../public'), {
+    setHeaders: (res, path) => {
+        if (path.endsWith('.css')) {
+            res.setHeader('Content-Type', 'text/css');
+        }
+    }
+}));
 
 // Logging middleware
 app.use((req, res, next) => {
