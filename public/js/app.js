@@ -56,11 +56,11 @@ document.getElementById('userSwitchButton').addEventListener('click', () => {
 
 // Note action buttons
 document.getElementById('backButton').addEventListener('click', () => {
-    saveNote();
+    saveNote(true);
 });
 
 document.getElementById('saveButton').addEventListener('click', () => {
-    saveNote();
+    saveNote(true);
 });
 
 document.getElementById('discardButton').addEventListener('click', discardChanges);
@@ -296,22 +296,22 @@ async function openNote(noteId) {
     }
 }
 
-function setupAutosave() {
-    const saveDelay = 2000; // 2 seconds
+function setupAutosave(delay = 2000) {
+    const saveDelay = delay; // Use provided delay or default to 2 seconds
     
     const noteContent = document.getElementById('noteContent');
     const noteTitle = document.getElementById('noteTitle');
     
     const saveHandler = () => {
         clearTimeout(autosaveTimeout);
-        autosaveTimeout = setTimeout(saveNote, saveDelay);
+        autosaveTimeout = setTimeout(() => saveNote(false), saveDelay);
     };
     
     noteContent.addEventListener('input', saveHandler);
     noteTitle.addEventListener('input', saveHandler);
 }
 
-async function saveNote() {
+async function saveNote(shouldClose = false) {
     if (!currentNoteId) return;
 
     try {
@@ -339,22 +339,27 @@ async function saveNote() {
             throw new Error(error.error || 'Failed to save note');
         }
 
-        showFeedback('Note saved successfully', 'success');
+        // Only show success message for manual saves
+        if (shouldClose) {
+            showFeedback('Note saved successfully', 'success');
+        }
         
-        // Release the lock
-        await fetch(`/api/notes/${currentNoteId}/unlock`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ user: currentUser })
-        });
+        if (shouldClose) {
+            // Release the lock
+            await fetch(`/api/notes/${currentNoteId}/unlock`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ user: currentUser })
+            });
 
-        // Return to notes list
-        currentNoteId = null;
-        noteEditor.classList.add('hidden');
-        notesList.classList.remove('hidden');
-        await loadNotes();
+            // Return to notes list
+            currentNoteId = null;
+            noteEditor.classList.add('hidden');
+            notesList.classList.remove('hidden');
+            await loadNotes();
+        }
     } catch (error) {
         console.error('Error saving note:', error);
         showFeedback(error.message, 'error');
@@ -405,6 +410,7 @@ async function createNewNote() {
     }
 
     try {
+        // First create the note
         const response = await fetch('/api/notes', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -423,14 +429,27 @@ async function createNewNote() {
 
         currentNoteId = data.id;
         
+        // Then acquire the lock
+        const lockResponse = await fetch(`/api/notes/${currentNoteId}/lock`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ user: currentUser })
+        });
+
+        if (!lockResponse.ok) {
+            throw new Error('Failed to acquire note lock');
+        }
+        
         // Update UI
         noteTitle.value = 'New Note';
         noteContent.value = 'Start writing your note here...';
         noteEditor.classList.remove('hidden');
         notesList.classList.add('hidden');
         
-        // Setup autosave
-        setupAutosave();
+        // Setup autosave with a longer delay for new notes
+        setupAutosave(5000); // 5 second delay for new notes
         
         showFeedback('New note created', 'success');
     } catch (error) {
