@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/css/style.css">
     <link rel="icon" type="image/svg+xml" href="/icons/octonote.svg">
 </head>
-<body>
+<body class="app-container">
     <header>
         <div class="logo">
             <button id="homeButton" class="logo-button">
@@ -20,15 +20,15 @@
     </header>
 
     <div id="menu" class="menu hidden">
-        <button id="newNoteButton">
+        <button id="newNoteButton" class="menu-item">
             <img src="/icons/useradd.svg" alt="New Note">
             Create New Note
         </button>
-        <button id="statusButton">
+        <button id="statusButton" class="menu-item">
             <img src="/icons/status.svg" alt="Status">
             Status
         </button>
-        <button id="userSwitchButton">
+        <button id="userSwitchButton" class="menu-item">
             <img src="/icons/user.svg" alt="Switch User">
             Switch User
         </button>
@@ -41,32 +41,32 @@
 
         <div id="noteEditor" class="note-editor hidden">
             <div class="note-header">
-                <input type="text" id="noteTitle" placeholder="Note Title">
-                <div id="noteMeta"></div>
+                <input type="text" id="noteTitle" class="note-title" placeholder="Note Title">
+                <div id="noteMeta" class="note-meta"></div>
             </div>
-            <textarea id="noteContent" placeholder="Start writing..."></textarea>
+            <textarea id="noteContent" class="note-content" placeholder="Start writing..."></textarea>
             <div class="note-actions">
-                <button id="backButton">
+                <button id="backButton" class="action-button">
                     <img src="/icons/back.svg" alt="Back">
                     Back
                 </button>
-                <button id="saveButton">
+                <button id="saveButton" class="action-button">
                     <img src="/icons/save.svg" alt="Save">
                     Save
                 </button>
-                <button id="discardButton">
+                <button id="discardButton" class="action-button">
                     <img src="/icons/discard.svg" alt="Discard">
                     Discard
                 </button>
-                <button id="reloadButton">
+                <button id="reloadButton" class="action-button">
                     <img src="/icons/reload.svg" alt="Reload">
                     Reload
                 </button>
-                <button id="printButton">
+                <button id="printButton" class="action-button">
                     <img src="/icons/print.svg" alt="Print">
                     Print
                 </button>
-                <button id="shareButton">
+                <button id="shareButton" class="action-button">
                     <img src="/icons/share.svg" alt="Share">
                     Share
                 </button>
@@ -78,7 +78,7 @@
         <div class="modal-content">
             <h2>Choose Your Name</h2>
             <div id="existingUsers"></div>
-            <div class="new-user">
+            <div class="user-input">
                 <input type="text" id="newUserName" placeholder="Enter new name">
                 <button id="createUserButton">Create</button>
             </div>
