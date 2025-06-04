@@ -47,16 +47,13 @@ async function initializeLogger() {
       }),
       new transports.File({ 
         filename: '/data/octonote/logs/combined.log' 
+      }),
+      // Always add console transport for debugging
+      new transports.Console({
+        format: format.simple()
       })
     ]
   });
-
-  // Add console transport in development
-  if (process.env.NODE_ENV !== 'production') {
-    logger.add(new transports.Console({
-      format: format.simple()
-    }));
-  }
 }
 
 // Security middleware
