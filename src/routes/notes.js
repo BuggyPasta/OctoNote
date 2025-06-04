@@ -72,6 +72,11 @@ router.get('/:id', async (req, res) => {
     try {
         const noteId = sanitizeFilename(req.params.id);
         const filePath = path.join(NOTES_DIR, `${noteId}.txt`);
+        const user = req.query.user;
+
+        if (!user) {
+            return res.status(400).json({ error: 'User is required' });
+        }
 
         // First check if the note exists
         try {
@@ -80,8 +85,8 @@ router.get('/:id', async (req, res) => {
             return res.status(404).json({ error: 'Note not found' });
         }
 
-        // Then check if it's locked
-        if (noteLocks.has(noteId)) {
+        // Then check if it's locked by another user
+        if (noteLocks.has(noteId) && noteLocks.get(noteId) !== user) {
             return res.status(409).json({
                 error: 'Note is locked',
                 user: noteLocks.get(noteId)
@@ -91,8 +96,8 @@ router.get('/:id', async (req, res) => {
         // Read the note
         const note = await readNoteFile(noteId);
         
-        // Lock the note after successful read
-        noteLocks.set(noteId, req.query.user);
+        // Lock the note for this user
+        noteLocks.set(noteId, user);
         
         res.json(note);
     } catch (error) {

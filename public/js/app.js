@@ -258,43 +258,20 @@ async function loadNotes() {
 
 async function openNote(noteId) {
     try {
-        // First try to acquire the lock
-        const lockResponse = await fetch(`/api/notes/${noteId}/lock`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ user: currentUser })
-        });
-
-        if (!lockResponse.ok) {
-            const error = await lockResponse.json();
+        // First check if the note exists and get its content
+        const response = await fetch(`/api/notes/${noteId}?user=${encodeURIComponent(currentUser)}`);
+        if (!response.ok) {
+            const error = await response.json();
             if (error.error === 'Note is locked') {
                 showFeedback(`This note is being edited by ${error.user}`, 'error');
                 return;
             }
-            throw new Error(error.error || 'Failed to acquire note lock');
-        }
-
-        // Then fetch the note
-        const response = await fetch(`/api/notes/${noteId}?user=${encodeURIComponent(currentUser)}`);
-        if (!response.ok) {
-            // Release the lock if we couldn't get the note
-            try {
-                await fetch(`/api/notes/${noteId}/unlock`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ user: currentUser })
-                });
-            } catch (error) {
-                console.error('Error releasing note lock:', error);
-            }
-            throw new Error('Failed to fetch note');
+            throw new Error(error.error || 'Failed to fetch note');
         }
 
         const note = await response.json();
+        
+        // Update UI first
         currentNoteId = noteId;
         noteTitle.value = note.title;
         noteContent.value = note.content;
