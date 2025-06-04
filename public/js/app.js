@@ -182,15 +182,21 @@ async function selectUser(username) {
     try {
         // Release any existing note lock when switching users
         if (currentNoteId) {
-            await fetch(`/api/notes/${currentNoteId}/unlock`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ user: currentUser })
-            });
+            try {
+                await fetch(`/api/notes/${currentNoteId}/unlock`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ user: currentUser })
+                });
+            } catch (error) {
+                console.error('Error releasing note lock:', error);
+                // Continue with user switch even if unlock fails
+            }
         }
         
+        // Update user first
         currentUser = username;
         localStorage.setItem('octonote_user', username);
         currentNoteId = null;
@@ -273,23 +279,29 @@ async function openNote(noteId) {
         const response = await fetch(`/api/notes/${noteId}?user=${encodeURIComponent(currentUser)}`);
         if (!response.ok) {
             // Release the lock if we couldn't get the note
-            await fetch(`/api/notes/${noteId}/unlock`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ user: currentUser })
-            });
+            try {
+                await fetch(`/api/notes/${noteId}/unlock`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ user: currentUser })
+                });
+            } catch (error) {
+                console.error('Error releasing note lock:', error);
+            }
             throw new Error('Failed to fetch note');
         }
 
         const note = await response.json();
         currentNoteId = noteId;
-        document.getElementById('noteTitle').value = note.title;
-        document.getElementById('noteContent').value = note.content;
-        document.getElementById('noteView').style.display = 'block';
-        document.getElementById('notesList').style.display = 'none';
-        document.getElementById('newNoteBtn').style.display = 'none';
+        noteTitle.value = note.title;
+        noteContent.value = note.content;
+        noteEditor.classList.remove('hidden');
+        notesList.classList.add('hidden');
+        
+        // Setup autosave
+        setupAutosave();
     } catch (error) {
         console.error('Error opening note:', error);
         showFeedback(error.message, 'error');
@@ -315,8 +327,8 @@ async function saveNote(shouldClose = false) {
     if (!currentNoteId) return;
 
     try {
-        const title = document.getElementById('noteTitle').value;
-        const content = document.getElementById('noteContent').value;
+        const title = noteTitle.value;
+        const content = noteContent.value;
 
         console.log('Saving note:', { id: currentNoteId, title, content });
 
