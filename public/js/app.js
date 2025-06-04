@@ -91,6 +91,8 @@ function goHome() {
 function showUserModal() {
     menu.classList.add('hidden');
     userModal.classList.remove('hidden');
+    // Clear the input field when showing the modal
+    document.getElementById('newUserName').value = '';
     loadExistingUsers();
 }
 
@@ -183,15 +185,19 @@ async function openNote(noteId) {
         const response = await fetch(`/api/notes/${noteId}`);
         if (response.status === 409) {
             const data = await response.json();
-            showFeedback(`This note is being edited by ${data.user}`, 'warning');
+            showFeedback(`This note is being edited by ${data.user || 'another user'}`, 'warning');
             return;
+        }
+
+        if (!response.ok) {
+            throw new Error('Failed to load note');
         }
 
         const note = await response.json();
         currentNote = note;
         noteTitle.value = note.title;
         noteContent.value = note.content;
-        noteMeta.textContent = `Last edited by ${note.lastEditedBy} on ${formatDate(note.lastEdited)}`;
+        noteMeta.textContent = `Last edited by ${note.lastEditedBy || currentUser} on ${formatDate(note.lastEdited)}`;
         
         notesList.classList.add('hidden');
         noteEditor.classList.remove('hidden');
@@ -235,13 +241,14 @@ async function saveNote() {
                 currentNote.id = data.id;
             }
             showFeedback('Note saved successfully', 'success');
-            loadNotes(); // Refresh the list
+            return data;
         } else {
             const data = await response.json();
-            showFeedback(data.error, 'error');
+            throw new Error(data.error || 'Failed to save note');
         }
     } catch (error) {
-        showFeedback('Error saving note', 'error');
+        showFeedback(error.message || 'Error saving note', 'error');
+        throw error;
     }
 }
 
@@ -254,12 +261,22 @@ function discardChanges() {
 function backToList() {
     if (currentNote && !currentNote.id) {
         // If it's a new note, save it before going back
-        saveNote();
+        saveNote().then(() => {
+            noteEditor.classList.add('hidden');
+            notesList.classList.remove('hidden');
+            currentNote = null;
+            clearTimeout(autosaveTimeout);
+            loadNotes(); // Refresh the list after saving
+        }).catch(() => {
+            // If save fails, stay in editor
+            showFeedback('Note not saved. Please try again.', 'error');
+        });
+    } else {
+        noteEditor.classList.add('hidden');
+        notesList.classList.remove('hidden');
+        currentNote = null;
+        clearTimeout(autosaveTimeout);
     }
-    noteEditor.classList.add('hidden');
-    notesList.classList.remove('hidden');
-    currentNote = null;
-    clearTimeout(autosaveTimeout);
 }
 
 async function reloadNote() {
