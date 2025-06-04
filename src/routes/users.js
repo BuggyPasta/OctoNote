@@ -11,23 +11,17 @@ async function readUsers() {
         const content = await fs.readFile(USERS_FILE, 'utf8');
         return content.split('\n').filter(user => user.trim());
     } catch (error) {
-        if (error.code === 'ENOENT') {
-            // File doesn't exist yet, return empty array
-            return [];
-        }
-        console.error('Error reading users file:', error);
-        throw error;
+        console.error('Error reading users:', error);
+        return [];
     }
 }
 
 // Helper function to write users
 async function writeUsers(users) {
     try {
-        // Ensure the directory exists
-        await fs.mkdir(path.dirname(USERS_FILE), { recursive: true });
         await fs.writeFile(USERS_FILE, users.join('\n'), 'utf8');
     } catch (error) {
-        console.error('Error writing users file:', error);
+        console.error('Error writing users:', error);
         throw error;
     }
 }
@@ -79,7 +73,6 @@ router.delete('/:name', async (req, res) => {
         await writeUsers(filteredUsers);
         res.json({ success: true });
     } catch (error) {
-        console.error('Error deleting user:', error);
         res.status(500).json({ error: 'Error deleting user' });
     }
 });

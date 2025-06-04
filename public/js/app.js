@@ -99,17 +99,12 @@ function showUserModal() {
     newUserNameInput.value = '';
     
     // Add Enter key handler for the input field
-    const handleEnter = (event) => {
+    newUserNameInput.addEventListener('keypress', (event) => {
         if (event.key === 'Enter') {
             event.preventDefault();
             createUser();
         }
-    };
-    
-    newUserNameInput.addEventListener('keypress', handleEnter);
-    
-    // Store the handler for later removal
-    newUserNameInput.dataset.enterHandler = handleEnter;
+    });
     
     loadExistingUsers();
 }

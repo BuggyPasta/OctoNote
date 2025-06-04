@@ -14,27 +14,9 @@ const statusRouter = require('./routes/status');
 const app = express();
 const PORT = process.env.PORT || 51828;
 
-// Configure helmet with content security policy
-app.use(helmet({
-    contentSecurityPolicy: {
-        directives: {
-            defaultSrc: ["'self'"],
-            styleSrc: ["'self'", "'unsafe-inline'"],
-            imgSrc: ["'self'", "data:", "blob:"],
-            scriptSrc: ["'self'", "'unsafe-inline'"],
-        },
-    },
-}));
-
 // Middleware
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '../public'), {
-    setHeaders: (res, path) => {
-        if (path.endsWith('.css')) {
-            res.setHeader('Content-Type', 'text/css');
-        }
-    }
-}));
+app.use(express.static(path.join(__dirname, '../public')));
 
 // Logging middleware
 app.use((req, res, next) => {

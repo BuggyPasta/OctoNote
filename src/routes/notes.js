@@ -31,15 +31,6 @@ async function readNoteFile(noteId) {
 async function writeNoteFile(noteId, title, content, user) {
     try {
         const filePath = path.join(NOTES_DIR, `${noteId}.txt`);
-        
-        // Check write permissions
-        try {
-            await fs.access(NOTES_DIR, fs.constants.W_OK);
-        } catch (error) {
-            console.error('No write permission for notes directory:', error);
-            throw new Error('No permission to write notes');
-        }
-
         const now = new Date().toLocaleString('en-US', {
             weekday: 'long',
             day: 'numeric',
@@ -60,14 +51,6 @@ async function writeNoteFile(noteId, title, content, user) {
 // Get all notes
 router.get('/', async (req, res) => {
     try {
-        // Check read permissions
-        try {
-            await fs.access(NOTES_DIR, fs.constants.R_OK);
-        } catch (error) {
-            console.error('No read permission for notes directory:', error);
-            return res.status(500).json({ error: 'No permission to read notes' });
-        }
-
         const files = await fs.readdir(NOTES_DIR);
         const notes = await Promise.all(
             files
@@ -89,14 +72,6 @@ router.get('/:id', async (req, res) => {
     try {
         const noteId = sanitizeFilename(req.params.id);
         const filePath = path.join(NOTES_DIR, `${noteId}.txt`);
-
-        // Check read permissions
-        try {
-            await fs.access(NOTES_DIR, fs.constants.R_OK);
-        } catch (error) {
-            console.error('No read permission for notes directory:', error);
-            return res.status(500).json({ error: 'No permission to read notes' });
-        }
 
         // Check if note is locked
         if (noteLocks.has(noteId)) {
@@ -126,14 +101,6 @@ router.post('/', async (req, res) => {
             return res.status(400).json({ error: 'Missing required fields' });
         }
 
-        // Check write permissions
-        try {
-            await fs.access(NOTES_DIR, fs.constants.W_OK);
-        } catch (error) {
-            console.error('No write permission for notes directory:', error);
-            return res.status(500).json({ error: 'No permission to create notes' });
-        }
-
         const noteId = uuidv4();
         await writeNoteFile(noteId, title, content, user);
         res.status(201).json({ id: noteId });
@@ -151,14 +118,6 @@ router.put('/:id', async (req, res) => {
 
         if (!title || !content || !user) {
             return res.status(400).json({ error: 'Missing required fields' });
-        }
-
-        // Check write permissions
-        try {
-            await fs.access(NOTES_DIR, fs.constants.W_OK);
-        } catch (error) {
-            console.error('No write permission for notes directory:', error);
-            return res.status(500).json({ error: 'No permission to update notes' });
         }
 
         // Check if note is locked by another user
@@ -182,14 +141,6 @@ router.delete('/:id', async (req, res) => {
     try {
         const noteId = sanitizeFilename(req.params.id);
         const filePath = path.join(NOTES_DIR, `${noteId}.txt`);
-
-        // Check write permissions
-        try {
-            await fs.access(NOTES_DIR, fs.constants.W_OK);
-        } catch (error) {
-            console.error('No write permission for notes directory:', error);
-            return res.status(500).json({ error: 'No permission to delete notes' });
-        }
 
         // Check if note is locked
         if (noteLocks.has(noteId)) {
