@@ -97,8 +97,16 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
     try {
         const { title, content, user } = req.body;
-        if (!title || !content || !user) {
-            return res.status(400).json({ error: 'Missing required fields' });
+        
+        // Check each field individually
+        if (!title || title.trim() === '') {
+            return res.status(400).json({ error: 'Title is required' });
+        }
+        if (!content || content.trim() === '') {
+            return res.status(400).json({ error: 'Content is required' });
+        }
+        if (!user || user.trim() === '') {
+            return res.status(400).json({ error: 'User is required' });
         }
 
         const noteId = uuidv4();

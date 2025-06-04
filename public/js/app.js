@@ -410,22 +410,22 @@ async function createNewNote() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 title: 'New Note',
-                content: '',
+                content: 'Start writing your note here...',
                 user: currentUser
             })
         });
 
+        const data = await response.json();
+        
         if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.error || 'Failed to create note');
+            throw new Error(data.error || 'Failed to create note');
         }
 
-        const data = await response.json();
         currentNoteId = data.id;
         
         // Update UI
         noteTitle.value = 'New Note';
-        noteContent.value = '';
+        noteContent.value = 'Start writing your note here...';
         noteEditor.classList.remove('hidden');
         notesList.classList.add('hidden');
         
