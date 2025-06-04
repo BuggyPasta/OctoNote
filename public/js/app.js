@@ -18,12 +18,27 @@ const homeButton = document.getElementById('homeButton');
 
 // Event Listeners
 document.addEventListener('DOMContentLoaded', initializeApp);
+
+// Menu toggle
+function toggleMenu(event) {
+    event.stopPropagation(); // Prevent event from bubbling up
+    menu.classList.toggle('hidden');
+}
+
 menuButton.addEventListener('click', toggleMenu);
 homeButton.addEventListener('click', goHome);
 
 // Menu buttons
-document.getElementById('newNoteButton').addEventListener('click', createNewNote);
-document.getElementById('statusButton').addEventListener('click', showStatus);
+document.getElementById('newNoteButton').addEventListener('click', () => {
+    menu.classList.add('hidden');
+    createNewNote();
+});
+
+document.getElementById('statusButton').addEventListener('click', () => {
+    menu.classList.add('hidden');
+    showStatus();
+});
+
 document.getElementById('userSwitchButton').addEventListener('click', () => {
     menu.classList.add('hidden');
     showUserModal();
@@ -50,11 +65,6 @@ async function initializeApp() {
     } else {
         showUserModal();
     }
-}
-
-// Menu toggle
-function toggleMenu() {
-    menu.classList.toggle('hidden');
 }
 
 // Close menu when clicking outside
