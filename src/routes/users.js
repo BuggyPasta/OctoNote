@@ -13,8 +13,13 @@ async function readUsers() {
         console.log('Read users:', users);
         return users;
     } catch (error) {
+        if (error.code === 'ENOENT') {
+            console.log('Users file does not exist, creating empty file');
+            await fs.writeFile(USERS_FILE, '', 'utf8');
+            return [];
+        }
         console.error('Error reading users:', error);
-        return [];
+        throw error;
     }
 }
 

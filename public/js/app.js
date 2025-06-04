@@ -181,12 +181,19 @@ async function selectUser(username) {
                 body: JSON.stringify({ user: currentUser })
             });
         }
+        
         currentUser = username;
+        localStorage.setItem('octonote_user', username);
         currentNoteId = null;
-        document.getElementById('userModal').style.display = 'none';
-        document.getElementById('notesList').style.display = 'block';
-        document.getElementById('newNoteBtn').style.display = 'block';
-        loadNotes();
+        
+        // Hide the user modal and show the notes list
+        userModal.classList.add('hidden');
+        notesList.classList.remove('hidden');
+        noteEditor.classList.add('hidden');
+        
+        // Load the notes for the selected user
+        await loadNotes();
+        showFeedback(`Switched to user: ${username}`, 'success');
     } catch (error) {
         console.error('Error switching users:', error);
         showFeedback('Error switching users', 'error');
@@ -197,11 +204,22 @@ async function selectUser(username) {
 async function loadNotes() {
     try {
         const response = await fetch('/api/notes');
+        if (!response.ok) {
+            throw new Error('Failed to fetch notes');
+        }
+        
         const notes = await response.json();
+        console.log('Loaded notes:', notes);
+        
+        if (notes.length === 0) {
+            notesList.innerHTML = '<p class="no-notes">No notes yet. Click the + button to create one!</p>';
+            return;
+        }
+        
         notesList.innerHTML = notes.map(note => `
             <div class="note-card" data-note-id="${note.id}">
-                <h3>${note.title}</h3>
-                <p>Last edited by ${note.lastEditedBy} on ${formatDate(note.lastEdited)}</p>
+                <h3>${note.title || 'Untitled Note'}</h3>
+                <p>Last edited by ${note.lastEditedBy || 'Unknown'} on ${formatDate(note.lastEdited)}</p>
             </div>
         `).join('');
 
@@ -213,6 +231,7 @@ async function loadNotes() {
             });
         });
     } catch (error) {
+        console.error('Error loading notes:', error);
         showFeedback('Error loading notes', 'error');
     }
 }
