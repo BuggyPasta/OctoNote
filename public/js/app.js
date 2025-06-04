@@ -93,6 +93,16 @@ function showUserModal() {
     userModal.classList.remove('hidden');
     // Clear the input field when showing the modal
     document.getElementById('newUserName').value = '';
+    
+    // Add Enter key handler for the input field
+    const newUserNameInput = document.getElementById('newUserName');
+    newUserNameInput.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            createUser();
+        }
+    });
+    
     loadExistingUsers();
 }
 
@@ -191,20 +201,7 @@ async function loadNotes() {
 
 async function openNote(noteId) {
     try {
-        const response = await fetch(`/api/notes/${noteId}`);
-        if (response.status === 409) {
-            const data = await response.json();
-            showFeedback(`This note is being edited by ${data.user || 'another user'}`, 'warning');
-            return;
-        }
-
-        if (!response.ok) {
-            throw new Error('Failed to load note');
-        }
-
-        const note = await response.json();
-        
-        // Try to acquire the note lock
+        // First try to acquire the note lock
         const lockResponse = await fetch(`/api/notes/${noteId}/lock`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -217,6 +214,19 @@ async function openNote(noteId) {
             return;
         }
 
+        // If we got the lock, fetch the note
+        const response = await fetch(`/api/notes/${noteId}`);
+        if (!response.ok) {
+            // Release the lock if we can't get the note
+            await fetch(`/api/notes/${noteId}/unlock`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user: currentUser })
+            });
+            throw new Error('Failed to load note');
+        }
+
+        const note = await response.json();
         currentNote = note;
         noteTitle.value = note.title;
         noteContent.value = note.content;
