@@ -3,6 +3,7 @@ let currentUser = null;
 let currentNote = null;
 let noteLocks = new Map();
 let autosaveTimeout = null;
+let newUserNameInput = null;
 
 // DOM Elements
 const menuButton = document.getElementById('menuButton');
@@ -91,19 +92,33 @@ function goHome() {
 function showUserModal() {
     menu.classList.add('hidden');
     userModal.classList.remove('hidden');
-    // Clear the input field when showing the modal
-    document.getElementById('newUserName').value = '';
+    
+    // Get the input field
+    newUserNameInput = document.getElementById('newUserName');
+    newUserNameInput.value = '';
     
     // Add Enter key handler for the input field
-    const newUserNameInput = document.getElementById('newUserName');
-    newUserNameInput.addEventListener('keypress', (event) => {
+    const handleEnter = (event) => {
         if (event.key === 'Enter') {
             event.preventDefault();
             createUser();
         }
-    });
+    };
+    
+    newUserNameInput.addEventListener('keypress', handleEnter);
+    
+    // Store the handler for later removal
+    newUserNameInput.dataset.enterHandler = handleEnter;
     
     loadExistingUsers();
+}
+
+function closeUserModal() {
+    if (newUserNameInput && newUserNameInput.dataset.enterHandler) {
+        newUserNameInput.removeEventListener('keypress', newUserNameInput.dataset.enterHandler);
+        delete newUserNameInput.dataset.enterHandler;
+    }
+    userModal.classList.add('hidden');
 }
 
 async function loadExistingUsers() {
@@ -146,7 +161,7 @@ async function createUser() {
         if (response.ok) {
             currentUser = newUserName;
             localStorage.setItem('octonote_user', newUserName);
-            userModal.classList.add('hidden');
+            closeUserModal();
             loadNotes();
             showFeedback('Welcome to OctoNote!', 'success');
         } else {
@@ -170,7 +185,7 @@ function selectUser(name) {
     
     currentUser = name;
     localStorage.setItem('octonote_user', name);
-    userModal.classList.add('hidden');
+    closeUserModal();
     loadNotes();
     showFeedback(`Welcome back, ${name}!`, 'success');
 }
