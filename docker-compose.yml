@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   octonote:
     build:
@@ -19,6 +21,10 @@ services:
       start_period: 10s
     networks:
       - octonote_network
+
+volumes:
+  octonote_data:
+    name: octonote_data
 
 networks:
   octonote_network:

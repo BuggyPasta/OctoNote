@@ -11,12 +11,24 @@ const USERS_FILE = '/data/octonote/users.txt';
 router.get('/', async (req, res) => {
     try {
         // Get total notes
-        const files = await fs.readdir(NOTES_DIR);
-        const totalNotes = files.filter(file => file.endsWith('.txt')).length;
+        let totalNotes = 0;
+        try {
+            const files = await fs.readdir(NOTES_DIR);
+            totalNotes = files.filter(file => file.endsWith('.txt')).length;
+        } catch (error) {
+            console.error('Error reading notes directory:', error);
+            // Continue with 0 notes if directory doesn't exist
+        }
 
         // Get total users
-        const users = await fs.readFile(USERS_FILE, 'utf8');
-        const totalUsers = users.split('\n').filter(Boolean).length;
+        let totalUsers = 0;
+        try {
+            const users = await fs.readFile(USERS_FILE, 'utf8');
+            totalUsers = users.split('\n').filter(Boolean).length;
+        } catch (error) {
+            console.error('Error reading users file:', error);
+            // Continue with 0 users if file doesn't exist
+        }
 
         // Get memory usage
         const totalMem = os.totalmem();
@@ -40,6 +52,7 @@ router.get('/', async (req, res) => {
             lastUpdated: new Date().toISOString()
         });
     } catch (error) {
+        console.error('Error getting system status:', error);
         res.status(500).json({
             status: 'error',
             error: 'Error getting system status'

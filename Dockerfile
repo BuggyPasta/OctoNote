@@ -12,25 +12,36 @@ RUN npm install
 # Copy application files
 COPY . .
 
-# Install gosu
+# Install gosu and wget (for healthcheck)
 RUN apt-get update && \
-    apt-get install -y gosu && \
+    apt-get install -y gosu wget && \
     rm -rf /var/lib/apt/lists/*
 
 # Create startup script
 RUN echo '#!/bin/sh\n\
-# Create directories if they don'\''t exist\n\
+set -e\n\
+echo "Starting OctoNote container..."\n\
+\n\
+# Create data directory structure\n\
+echo "Creating data directories..."\n\
 mkdir -p /data/octonote/notes /data/octonote/logs\n\
 \n\
 # Create users.txt if it doesn'\''t exist\n\
+echo "Checking users.txt..."\n\
 touch /data/octonote/users.txt\n\
 \n\
-# Set permissions\n\
-chown -R node:node /data/octonote\n\
+# Set permissions - use node user (1000) to match host user\n\
+echo "Setting permissions..."\n\
+chown -R 1000:1000 /data/octonote\n\
 chmod -R 755 /data/octonote\n\
 \n\
-# Start the application\n\
-exec gosu node node src/server.js' > /app/start.sh && \
+# List directory contents and permissions\n\
+echo "Directory contents:"\n\
+ls -la /data/octonote\n\
+\n\
+# Start the application as node user\n\
+echo "Starting application..."\n\
+exec gosu 1000:1000 node src/server.js' > /app/start.sh && \
 chmod +x /app/start.sh
 
 # Expose port

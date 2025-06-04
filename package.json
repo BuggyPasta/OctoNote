@@ -1,7 +1,7 @@
 {
   "name": "octonote",
   "version": "1.0.0",
-  "description": "A minimalist self-hosted note-taking app",
+  "description": "A simple note-taking application",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
@@ -19,6 +19,6 @@
     "nodemon": "^3.0.2"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=14.0.0"
   }
 } 

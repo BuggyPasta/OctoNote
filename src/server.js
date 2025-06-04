@@ -12,111 +12,86 @@ const statusRouter = require('./routes/status');
 
 // Initialize Express app
 const app = express();
-const port = 51828;
+const PORT = process.env.PORT || 3000;
 
-// Initialize data directory
-async function initializeDataDirectory() {
-  try {
-    await fs.mkdir('/data/octonote/notes', { recursive: true });
-    await fs.mkdir('/data/octonote/logs', { recursive: true });
-    
-    // Create users.txt if it doesn't exist
-    try {
-      await fs.access('/data/octonote/users.txt');
-    } catch {
-      await fs.writeFile('/data/octonote/users.txt', '', 'utf8');
-    }
-  } catch (error) {
-    console.error('Error initializing data directory:', error);
-    process.exit(1);
-  }
-}
-
-// Configure Winston logger
-let logger;
-async function initializeLogger() {
-  logger = createLogger({
-    format: format.combine(
-      format.timestamp(),
-      format.json()
-    ),
-    transports: [
-      new transports.File({ 
-        filename: '/data/octonote/logs/error.log', 
-        level: 'error' 
-      }),
-      new transports.File({ 
-        filename: '/data/octonote/logs/combined.log' 
-      }),
-      // Always add console transport for debugging
-      new transports.Console({
-        format: format.simple()
-      })
-    ]
-  });
-}
-
-// Security middleware
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'", "http:", "https:"],
-      styleSrc: ["'self'", "'unsafe-inline'", "http:", "https:"],
-      scriptSrc: ["'self'", "http:", "https:"],
-      imgSrc: ["'self'", "data:", "http:", "https:"],
-      connectSrc: ["'self'", "http:", "https:"],
-      upgradeInsecureRequests: null
-    }
-  }
-}));
-
-// Redirect HTTPS to HTTP
-app.use((req, res, next) => {
-  if (req.secure) {
-    res.redirect(`http://${req.headers.host}${req.url}`);
-  } else {
-    next();
-  }
-});
-
-// Body parsing
+// Middleware
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// Static files
 app.use(express.static(path.join(__dirname, '../public')));
-app.use('/icons', express.static(path.join(__dirname, '../icons')));
 
-// API routes
-app.use('/api/notes', notesRouter);
-app.use('/api/users', usersRouter);
-app.use('/api/status', statusRouter);
+// Logging middleware
+app.use((req, res, next) => {
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+    next();
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  if (logger) {
-    logger.error(err.stack);
-  } else {
-    console.error(err.stack);
-  }
-  res.status(500).json({ error: 'Something went wrong!' });
+    console.error('Server error:', err);
+    res.status(500).json({ error: 'Internal server error' });
+});
+
+// Routes
+app.use('/api/users', usersRouter);
+app.use('/api/notes', notesRouter);
+app.use('/api/status', statusRouter);
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+    res.json({ status: 'ok' });
 });
 
 // Start server
 async function startServer() {
-  await initializeDataDirectory();
-  await initializeLogger();
-  
-  // Add logging middleware after logger is initialized
-  app.use(morgan('combined', {
-    stream: {
-      write: message => logger.info(message.trim())
-    }
-  }));
+    try {
+        // Ensure data directory exists
+        const dataDir = '/data/octonote';
+        const notesDir = path.join(dataDir, 'notes');
+        const usersFile = path.join(dataDir, 'users.json');
 
-  app.listen(port, () => {
-    logger.info(`OctoNote server listening on port ${port}`);
-  });
+        try {
+            await fs.access(dataDir);
+            console.log('Data directory exists');
+        } catch (error) {
+            console.log('Creating data directory...');
+            await fs.mkdir(dataDir, { recursive: true });
+            console.log('Data directory created');
+        }
+
+        try {
+            await fs.access(notesDir);
+            console.log('Notes directory exists');
+        } catch (error) {
+            console.log('Creating notes directory...');
+            await fs.mkdir(notesDir, { recursive: true });
+            console.log('Notes directory created');
+        }
+
+        try {
+            await fs.access(usersFile);
+            console.log('Users file exists');
+        } catch (error) {
+            console.log('Creating users file...');
+            await fs.writeFile(usersFile, '[]', 'utf8');
+            console.log('Users file created');
+        }
+
+        // Verify permissions
+        try {
+            await fs.access(dataDir, fs.constants.R_OK | fs.constants.W_OK);
+            console.log('Data directory permissions verified');
+        } catch (error) {
+            console.error('Permission error:', error);
+            throw new Error('No permission to access data directory');
+        }
+
+        app.listen(PORT, () => {
+            console.log(`Server is running on port ${PORT}`);
+            console.log('Server startup complete');
+        });
+    } catch (error) {
+        console.error('Server startup failed:', error);
+        process.exit(1);
+    }
 }
 
 startServer(); 

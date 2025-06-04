@@ -4,6 +4,7 @@ let currentNote = null;
 let noteLocks = new Map();
 let autosaveTimeout = null;
 let newUserNameInput = null;
+let currentNoteId = null;
 
 // DOM Elements
 const menuButton = document.getElementById('menuButton');
@@ -173,21 +174,28 @@ async function createUser() {
     }
 }
 
-function selectUser(name) {
-    // Release any existing note lock when switching users
-    if (currentNote && currentNote.id) {
-        fetch(`/api/notes/${currentNote.id}/unlock`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ user: currentUser })
-        }).catch(error => console.error('Error releasing note lock:', error));
+async function selectUser(username) {
+    try {
+        // Release any existing note lock when switching users
+        if (currentNoteId) {
+            await fetch(`/api/notes/${currentNoteId}/unlock`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ user: currentUser })
+            });
+        }
+        currentUser = username;
+        currentNoteId = null;
+        document.getElementById('userModal').style.display = 'none';
+        document.getElementById('notesList').style.display = 'block';
+        document.getElementById('newNoteBtn').style.display = 'block';
+        loadNotes();
+    } catch (error) {
+        console.error('Error switching users:', error);
+        showFeedback('Error switching users', 'error');
     }
-    
-    currentUser = name;
-    localStorage.setItem('octonote_user', name);
-    closeUserModal();
-    loadNotes();
-    showFeedback(`Welcome back, ${name}!`, 'success');
 }
 
 // Notes management
@@ -216,87 +224,93 @@ async function loadNotes() {
 
 async function openNote(noteId) {
     try {
-        // First try to acquire the note lock
+        // First try to acquire the lock
         const lockResponse = await fetch(`/api/notes/${noteId}/lock`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({ user: currentUser })
         });
 
         if (!lockResponse.ok) {
-            const lockData = await lockResponse.json();
-            showFeedback(`This note is being edited by ${lockData.user || 'another user'}`, 'warning');
-            return;
+            const error = await lockResponse.json();
+            if (error.error === 'Note is locked') {
+                showFeedback(`This note is being edited by ${error.user}`, 'error');
+                return;
+            }
+            throw new Error(error.error || 'Failed to acquire note lock');
         }
 
-        // If we got the lock, fetch the note
-        const response = await fetch(`/api/notes/${noteId}`);
+        // Then fetch the note
+        const response = await fetch(`/api/notes/${noteId}?user=${encodeURIComponent(currentUser)}`);
         if (!response.ok) {
-            // Release the lock if we can't get the note
+            // Release the lock if we couldn't get the note
             await fetch(`/api/notes/${noteId}/unlock`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify({ user: currentUser })
             });
-            throw new Error('Failed to load note');
+            throw new Error('Failed to fetch note');
         }
 
         const note = await response.json();
-        currentNote = note;
-        noteTitle.value = note.title;
-        noteContent.value = note.content;
-        noteMeta.textContent = `Last edited by ${note.lastEditedBy || currentUser} on ${formatDate(note.lastEdited)}`;
-        
-        notesList.classList.add('hidden');
-        noteEditor.classList.remove('hidden');
-        
-        // Setup autosave
-        setupAutosave();
+        currentNoteId = noteId;
+        document.getElementById('noteTitle').value = note.title;
+        document.getElementById('noteContent').value = note.content;
+        document.getElementById('noteView').style.display = 'block';
+        document.getElementById('notesList').style.display = 'none';
+        document.getElementById('newNoteBtn').style.display = 'none';
     } catch (error) {
-        showFeedback('Error opening note', 'error');
+        console.error('Error opening note:', error);
+        showFeedback(error.message, 'error');
     }
 }
 
 function setupAutosave() {
     const saveDelay = 2000; // 2 seconds
     
-    noteContent.addEventListener('input', () => {
+    const noteContent = document.getElementById('noteContent');
+    const noteTitle = document.getElementById('noteTitle');
+    
+    const saveHandler = () => {
         clearTimeout(autosaveTimeout);
         autosaveTimeout = setTimeout(saveNote, saveDelay);
-    });
+    };
+    
+    noteContent.addEventListener('input', saveHandler);
+    noteTitle.addEventListener('input', saveHandler);
 }
 
 async function saveNote() {
-    if (!currentNote) return;
+    if (!currentNoteId) return;
 
     try {
-        const method = currentNote.id ? 'PUT' : 'POST';
-        const url = currentNote.id ? `/api/notes/${currentNote.id}` : '/api/notes';
-        
-        const response = await fetch(url, {
-            method: method,
+        const response = await fetch(`/api/notes/${currentNoteId}`, {
+            method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                title: noteTitle.value,
-                content: noteContent.value,
+                title: document.getElementById('noteTitle').value,
+                content: document.getElementById('noteContent').value,
                 user: currentUser
             })
         });
 
-        if (response.ok) {
-            const data = await response.json();
-            if (!currentNote.id) {
-                currentNote.id = data.id;
+        if (!response.ok) {
+            const error = await response.json();
+            if (error.error === 'Note is locked') {
+                showFeedback(`This note is being edited by ${error.user}`, 'error');
+                return;
             }
-            showFeedback('Note saved successfully', 'success');
-            return data;
-        } else {
-            const data = await response.json();
-            throw new Error(data.error || 'Failed to save note');
+            throw new Error(error.error || 'Failed to save note');
         }
+
+        showFeedback('Note saved successfully', 'success');
     } catch (error) {
-        showFeedback(error.message || 'Error saving note', 'error');
-        throw error;
+        console.error('Error saving note:', error);
+        showFeedback(error.message, 'error');
     }
 }
 
@@ -306,33 +320,26 @@ function discardChanges() {
     }
 }
 
-function backToList() {
-    if (currentNote && !currentNote.id) {
-        // If it's a new note, save it before going back
-        saveNote().then(() => {
-            noteEditor.classList.add('hidden');
-            notesList.classList.remove('hidden');
-            currentNote = null;
-            clearTimeout(autosaveTimeout);
-            loadNotes(); // Refresh the list after saving
-        }).catch(() => {
-            // If save fails, stay in editor
-            showFeedback('Note not saved. Please try again.', 'error');
-        });
-    } else {
-        // Release the note lock when going back
-        if (currentNote && currentNote.id) {
-            fetch(`/api/notes/${currentNote.id}/unlock`, {
+async function backToList() {
+    if (currentNoteId) {
+        try {
+            // Release the lock when going back
+            await fetch(`/api/notes/${currentNoteId}/unlock`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify({ user: currentUser })
-            }).catch(error => console.error('Error releasing note lock:', error));
+            });
+        } catch (error) {
+            console.error('Error releasing note lock:', error);
         }
-        noteEditor.classList.add('hidden');
-        notesList.classList.remove('hidden');
-        currentNote = null;
-        clearTimeout(autosaveTimeout);
     }
+    currentNoteId = null;
+    document.getElementById('noteView').style.display = 'none';
+    document.getElementById('notesList').style.display = 'block';
+    document.getElementById('newNoteBtn').style.display = 'block';
+    loadNotes();
 }
 
 async function reloadNote() {
@@ -350,23 +357,35 @@ async function createNewNote() {
         return;
     }
 
-    currentNote = {
-        id: null,
-        title: 'New Note',
-        content: '',
-        lastEditedBy: currentUser,
-        lastEdited: new Date().toISOString()
-    };
+    try {
+        const response = await fetch('/api/notes', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                title: 'New Note',
+                content: '',
+                user: currentUser
+            })
+        });
 
-    noteTitle.value = currentNote.title;
-    noteContent.value = currentNote.content;
-    noteMeta.textContent = `Created by ${currentUser}`;
-    
-    notesList.classList.add('hidden');
-    noteEditor.classList.remove('hidden');
-    
-    // Setup autosave
-    setupAutosave();
+        if (!response.ok) {
+            throw new Error('Failed to create note');
+        }
+
+        const data = await response.json();
+        currentNoteId = data.id;
+        document.getElementById('noteTitle').value = 'New Note';
+        document.getElementById('noteContent').value = '';
+        document.getElementById('noteView').style.display = 'block';
+        document.getElementById('notesList').style.display = 'none';
+        document.getElementById('newNoteBtn').style.display = 'none';
+        
+        // Setup autosave
+        setupAutosave();
+    } catch (error) {
+        console.error('Error creating note:', error);
+        showFeedback(error.message, 'error');
+    }
 }
 
 // Print note

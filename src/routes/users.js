@@ -14,8 +14,14 @@ async function readUsers() {
         console.error('Error reading users file:', error);
         if (error.code === 'ENOENT') {
             // If file doesn't exist, create it
-            await fs.writeFile(USERS_FILE, '', 'utf8');
-            return [];
+            try {
+                await fs.writeFile(USERS_FILE, '', 'utf8');
+                console.log('Created new users.txt file');
+                return [];
+            } catch (writeError) {
+                console.error('Error creating users file:', writeError);
+                throw new Error('Could not create users file. Please check permissions.');
+            }
         }
         throw error; // Re-throw other errors
     }
@@ -24,6 +30,15 @@ async function readUsers() {
 // Helper function to write users file
 async function writeUsers(users) {
     try {
+        // First check if we can write to the file
+        try {
+            await fs.access(USERS_FILE, fs.constants.W_OK);
+        } catch (error) {
+            console.error('No write permission for users file:', error);
+            throw new Error('No permission to write to users file');
+        }
+
+        // Write the file
         await fs.writeFile(USERS_FILE, users.join('\n') + '\n', 'utf8');
     } catch (error) {
         console.error('Error writing users file:', error);
