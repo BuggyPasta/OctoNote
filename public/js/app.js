@@ -416,9 +416,24 @@ async function backToList() {
 }
 
 async function reloadNote() {
-    if (currentNote) {
-        await openNote(currentNote.id);
-        showFeedback('Note reloaded', 'success');
+    if (currentNoteId) {
+        try {
+            // First release the current lock
+            await fetch(`/api/notes/${currentNoteId}/unlock`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ user: currentUser })
+            });
+            
+            // Then reopen the note to get fresh content
+            await openNote(currentNoteId);
+            showFeedback('Note reloaded', 'success');
+        } catch (error) {
+            console.error('Error reloading note:', error);
+            showFeedback('Error reloading note', 'error');
+        }
     }
 }
 
@@ -576,14 +591,18 @@ function formatDate(dateString) {
             return 'Invalid date';
         }
         
-        // Use a consistent format across all devices
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
+        // Format: Wednesday, 04 June 2025 at 23:32
+        const options = {
+            weekday: 'long',
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        };
         
-        return `${year}-${month}-${day} ${hours}:${minutes}`;
+        return date.toLocaleString('en-US', options).replace(',', ' at');
     } catch (error) {
         console.error('Error formatting date:', error);
         return 'Invalid date';
