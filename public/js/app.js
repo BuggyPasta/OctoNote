@@ -416,21 +416,29 @@ async function createNewNote() {
         });
 
         if (!response.ok) {
-            throw new Error('Failed to create note');
+            const error = await response.json();
+            throw new Error(error.error || 'Failed to create note');
         }
 
         const data = await response.json();
         currentNoteId = data.id;
-        document.getElementById('noteTitle').value = 'New Note';
-        document.getElementById('noteContent').value = '';
+        
+        // Update UI
+        noteTitle.value = 'New Note';
+        noteContent.value = '';
         noteEditor.classList.remove('hidden');
         notesList.classList.add('hidden');
         
         // Setup autosave
         setupAutosave();
+        
+        showFeedback('New note created', 'success');
     } catch (error) {
         console.error('Error creating note:', error);
         showFeedback(error.message, 'error');
+        // Ensure we're back in the notes list view if creation failed
+        noteEditor.classList.add('hidden');
+        notesList.classList.remove('hidden');
     }
 }
 
