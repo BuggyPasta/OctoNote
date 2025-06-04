@@ -96,6 +96,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Static files
 app.use(express.static(path.join(__dirname, '../public')));
+app.use('/icons', express.static(path.join(__dirname, '../icons')));
 
 // API routes
 app.use('/api/notes', notesRouter);

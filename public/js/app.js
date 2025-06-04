@@ -204,21 +204,53 @@ async function reloadNote() {
     }
 }
 
+// Create new note
+async function createNewNote() {
+    if (!currentUser) {
+        showFeedback('Please select a user first', 'error');
+        showUserModal();
+        return;
+    }
+
+    currentNote = {
+        id: null,
+        title: 'New Note',
+        content: '',
+        lastEditedBy: currentUser,
+        lastEdited: new Date().toISOString()
+    };
+
+    noteTitle.value = currentNote.title;
+    noteContent.value = currentNote.content;
+    noteMeta.textContent = `Created by ${currentUser}`;
+    
+    notesList.classList.add('hidden');
+    noteEditor.classList.remove('hidden');
+    
+    // Setup autosave
+    setupAutosave();
+}
+
+// Print note
 function printNote() {
+    if (!currentNote) return;
+    
     const printWindow = window.open('', '_blank');
     printWindow.document.write(`
         <html>
             <head>
-                <title>${noteTitle.value}</title>
+                <title>${currentNote.title}</title>
                 <style>
-                    body { font-family: sans-serif; padding: 2rem; }
-                    .meta { color: #666; margin-bottom: 1rem; }
+                    body { font-family: Arial, sans-serif; padding: 20px; }
+                    h1 { margin-bottom: 20px; }
+                    .meta { color: #666; margin-bottom: 20px; }
+                    .content { white-space: pre-wrap; }
                 </style>
             </head>
             <body>
-                <h1>${noteTitle.value}</h1>
-                <div class="meta">${noteMeta.textContent}</div>
-                <pre>${noteContent.value}</pre>
+                <h1>${currentNote.title}</h1>
+                <div class="meta">Last edited by ${currentNote.lastEditedBy} on ${formatDate(currentNote.lastEdited)}</div>
+                <div class="content">${currentNote.content}</div>
             </body>
         </html>
     `);
@@ -226,18 +258,29 @@ function printNote() {
     printWindow.print();
 }
 
+// Share note
 async function shareNote() {
-    if (!navigator.share) {
-        showFeedback('Sharing is not supported on this browser', 'warning');
-        return;
-    }
-
+    if (!currentNote) return;
+    
     try {
-        await navigator.share({
-            title: noteTitle.value,
-            text: noteContent.value
-        });
-        showFeedback('Note shared successfully', 'success');
+        const shareData = {
+            title: currentNote.title,
+            text: currentNote.content,
+            url: window.location.href
+        };
+
+        if (navigator.share) {
+            await navigator.share(shareData);
+        } else {
+            // Fallback for browsers that don't support the Web Share API
+            const textArea = document.createElement('textarea');
+            textArea.value = `${currentNote.title}\n\n${currentNote.content}`;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            showFeedback('Note content copied to clipboard', 'success');
+        }
     } catch (error) {
         if (error.name !== 'AbortError') {
             showFeedback('Error sharing note', 'error');
