@@ -10,10 +10,13 @@ RUN npm install --production
 # Bundle app source
 COPY . .
 
-# Create data directory
-RUN mkdir -p /data/octonote/notes /data/octonote/logs && \
-    touch /data/octonote/users.txt && \
-    chown -R node:node /data/octonote
+# Create startup script
+RUN echo '#!/bin/sh\n\
+mkdir -p /data/octonote/notes /data/octonote/logs\n\
+touch /data/octonote/users.txt\n\
+chown -R node:node /data/octonote\n\
+exec node src/server.js' > /app/start.sh && \
+chmod +x /app/start.sh
 
 # Switch to non-root user
 USER node
@@ -22,4 +25,4 @@ USER node
 EXPOSE 51828
 
 # Start the app
-CMD ["npm", "start"] 
+CMD ["/app/start.sh"] 
