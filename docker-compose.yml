@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   octonote:
     build:
@@ -8,7 +10,7 @@ services:
     ports:
       - "51828:51828"
     volumes:
-      - /home/alex/docker_backup/octonote:/data/octonote
+      - octonote_data:/data/octonote
     environment:
       - NODE_ENV=production
     user: "node"
@@ -20,6 +22,10 @@ services:
       start_period: 10s
     networks:
       - octonote_network
+
+volumes:
+  octonote_data:
+    name: octonote_data
 
 networks:
   octonote_network:
