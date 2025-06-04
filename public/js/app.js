@@ -455,7 +455,7 @@ async function createNewNote() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                title: '',
+                title: 'Untitled Note',
                 content: '',
                 user: currentUser
             })
