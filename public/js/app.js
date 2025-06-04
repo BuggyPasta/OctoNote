@@ -18,6 +18,9 @@ const userModal = document.getElementById('userModal');
 const statusModal = document.getElementById('statusModal');
 const homeButton = document.getElementById('homeButton');
 
+// Ensure note editor is hidden on page load
+noteEditor.classList.add('hidden');
+
 // Event Listeners
 document.addEventListener('DOMContentLoaded', initializeApp);
 
@@ -69,9 +72,6 @@ document.getElementById('shareButton').addEventListener('click', shareNote);
 async function initializeApp() {
     // Add createUserButton event listener after DOM is loaded
     document.getElementById('createUserButton').addEventListener('click', createUser);
-    
-    // Ensure note editor is hidden
-    noteEditor.classList.add('hidden');
     
     // Check for existing user in localStorage
     const savedUser = localStorage.getItem('octonote_user');
