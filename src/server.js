@@ -2,7 +2,6 @@ const express = require('express');
 const path = require('path');
 const helmet = require('helmet');
 const morgan = require('morgan');
-const rateLimit = require('express-rate-limit');
 const { createLogger, format, transports } = require('winston');
 const fs = require('fs').promises;
 
@@ -82,13 +81,6 @@ app.use((req, res, next) => {
     next();
   }
 });
-
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // limit each IP to 100 requests per windowMs
-});
-app.use(limiter);
 
 // Body parsing
 app.use(express.json());

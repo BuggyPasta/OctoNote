@@ -80,10 +80,18 @@ async function loadExistingUsers() {
         const users = await response.json();
         const existingUsers = document.getElementById('existingUsers');
         existingUsers.innerHTML = users.map(user => `
-            <button class="user-button" onclick="selectUser('${user}')">
+            <button class="user-button" data-username="${user}">
                 ${user}
             </button>
         `).join('');
+
+        // Add click event listeners to all user buttons
+        document.querySelectorAll('.user-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const username = button.getAttribute('data-username');
+                selectUser(username);
+            });
+        });
     } catch (error) {
         showFeedback('Error loading users', 'error');
     }
