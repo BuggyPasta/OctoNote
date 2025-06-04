@@ -498,30 +498,41 @@ async function createNewNote() {
 }
 
 // Print note
-function printNote() {
-    if (!currentNote) return;
+async function printNote() {
+    if (!currentNoteId) return;
     
-    const printWindow = window.open('', '_blank');
-    printWindow.document.write(`
-        <html>
-            <head>
-                <title>${currentNote.title}</title>
-                <style>
-                    body { font-family: Arial, sans-serif; padding: 20px; }
-                    h1 { margin-bottom: 20px; }
-                    .meta { color: #666; margin-bottom: 20px; }
-                    .content { white-space: pre-wrap; }
-                </style>
-            </head>
-            <body>
-                <h1>${currentNote.title}</h1>
-                <div class="meta">Last edited by ${currentNote.lastEditedBy} on ${formatDate(currentNote.lastEdited)}</div>
-                <div class="content">${currentNote.content}</div>
-            </body>
-        </html>
-    `);
-    printWindow.document.close();
-    printWindow.print();
+    try {
+        const response = await fetch(`/api/notes/${currentNoteId}?user=${encodeURIComponent(currentUser)}`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch note for printing');
+        }
+        
+        const note = await response.json();
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
+            <html>
+                <head>
+                    <title>${note.title}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 20px; }
+                        h1 { margin-bottom: 20px; }
+                        .meta { color: #666; margin-bottom: 20px; }
+                        .content { white-space: pre-wrap; }
+                    </style>
+                </head>
+                <body>
+                    <h1>${note.title}</h1>
+                    <div class="meta">Last edited by ${note.lastEditedBy} on ${formatDate(note.lastEdited)}</div>
+                    <div class="content">${note.content}</div>
+                </body>
+            </html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
+    } catch (error) {
+        console.error('Error printing note:', error);
+        showFeedback('Error printing note', 'error');
+    }
 }
 
 // Share note
@@ -586,7 +597,25 @@ function closeStatusModal() {
 // Utility functions
 function formatDate(dateString) {
     try {
-        const date = new Date(dateString);
+        // Try parsing as ISO string first
+        let date = new Date(dateString);
+        
+        // If that fails, try parsing the legacy format
+        if (isNaN(date.getTime())) {
+            // Extract date parts from legacy format (e.g., "Wednesday, June 4, 2024, 11:32 PM EDT")
+            const parts = dateString.split(', ');
+            if (parts.length >= 4) {
+                const [weekday, monthDay, yearTime] = parts;
+                const [month, day] = monthDay.split(' ');
+                const [year, time] = yearTime.split(' at ');
+                const [hours, minutes] = time.split(':');
+                
+                // Create date string in a format that can be parsed
+                const dateStr = `${month} ${day}, ${year} ${hours}:${minutes}`;
+                date = new Date(dateStr);
+            }
+        }
+        
         if (isNaN(date.getTime())) {
             return 'Invalid date';
         }

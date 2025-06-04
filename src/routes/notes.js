@@ -31,15 +31,7 @@ async function readNoteFile(noteId) {
 async function writeNoteFile(noteId, title, content, user) {
     try {
         const filePath = path.join(NOTES_DIR, `${noteId}.txt`);
-        const now = new Date().toLocaleString('en-US', {
-            weekday: 'long',
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            timeZoneName: 'short'
-        });
+        const now = new Date().toISOString();
         const fileContent = `Title: ${title}\nLast edited by ${user} on ${now}\n${content}`;
         await fs.writeFile(filePath, fileContent, 'utf8');
     } catch (error) {
