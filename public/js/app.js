@@ -99,7 +99,7 @@ function goHome() {
 }
 
 // User management
-function showUserModal() {
+async function showUserModal() {
     menu.classList.add('hidden');
     userModal.classList.remove('hidden');
     
@@ -115,7 +115,8 @@ function showUserModal() {
         }
     });
     
-    loadExistingUsers();
+    // Load existing users
+    await loadExistingUsers();
 }
 
 function closeUserModal() {
@@ -305,6 +306,9 @@ async function openNote(noteId) {
     } catch (error) {
         console.error('Error opening note:', error);
         showFeedback(error.message, 'error');
+        // Make sure we're back in the notes list view
+        noteEditor.classList.add('hidden');
+        notesList.classList.remove('hidden');
     }
 }
 
