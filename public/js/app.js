@@ -455,8 +455,8 @@ async function createNewNote() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                title: 'New Note',
-                content: 'Start writing your note here...',
+                title: '',
+                content: '',
                 user: currentUser
             })
         });
@@ -483,8 +483,8 @@ async function createNewNote() {
         }
         
         // Update UI
-        noteTitle.value = 'New Note';
-        noteContent.value = 'Start writing your note here...';
+        noteTitle.value = '';
+        noteContent.value = '';
         noteEditor.classList.remove('hidden');
         notesList.classList.add('hidden');
         
@@ -545,11 +545,11 @@ async function showStatus() {
         const statusContent = document.getElementById('statusContent');
         statusContent.innerHTML = `
             <div class="status-info">
-                <p>Server Status: ${status.status}</p>
-                <p>Uptime: ${status.uptime}</p>
-                <p>Memory Usage: ${status.memory}</p>
-                <p>Active Users: ${status.activeUsers}</p>
-                <p>Total Notes: ${status.totalNotes}</p>
+                <p><strong>Server Status:</strong> ${status.status}</p>
+                <p><strong>Uptime:</strong> ${status.uptime}</p>
+                <p><strong>Memory Usage:</strong> ${status.memory}</p>
+                <p><strong>Active Users:</strong> ${status.activeUsers}</p>
+                <p><strong>Total Notes:</strong> ${status.totalNotes}</p>
             </div>
             <button class="close-button" onclick="closeStatusModal()">Close</button>
         `;
