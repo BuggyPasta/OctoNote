@@ -11,13 +11,24 @@ async function readUsers() {
         const content = await fs.readFile(USERS_FILE, 'utf8');
         return content.split('\n').filter(Boolean);
     } catch (error) {
-        return [];
+        console.error('Error reading users file:', error);
+        if (error.code === 'ENOENT') {
+            // If file doesn't exist, create it
+            await fs.writeFile(USERS_FILE, '', 'utf8');
+            return [];
+        }
+        throw error; // Re-throw other errors
     }
 }
 
 // Helper function to write users file
 async function writeUsers(users) {
-    await fs.writeFile(USERS_FILE, users.join('\n') + '\n', 'utf8');
+    try {
+        await fs.writeFile(USERS_FILE, users.join('\n') + '\n', 'utf8');
+    } catch (error) {
+        console.error('Error writing users file:', error);
+        throw error; // Re-throw to be handled by the route
+    }
 }
 
 // Get all users
@@ -60,7 +71,16 @@ router.post('/', async (req, res) => {
         await writeUsers(users);
         res.status(201).json({ name: sanitizedName });
     } catch (error) {
-        res.status(500).json({ error: 'Error creating user' });
+        console.error('Error creating user:', error);
+        // Check if it's a permission error
+        if (error.code === 'EACCES') {
+            return res.status(500).json({ error: 'Permission denied when creating user. Please check directory permissions.' });
+        }
+        // Check if it's a file system error
+        if (error.code === 'ENOENT') {
+            return res.status(500).json({ error: 'Users file not found. Please check if the data directory exists.' });
+        }
+        res.status(500).json({ error: `Error creating user: ${error.message}` });
     }
 });
 
