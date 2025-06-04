@@ -238,8 +238,11 @@ async function loadNotes() {
         
         notesList.innerHTML = notes.map(note => `
             <div class="note-card" data-note-id="${note.id}">
-                <h3>${note.title || 'Untitled Note'}</h3>
-                <p>Last edited by ${note.lastEditedBy || 'Unknown'} on ${formatDate(note.lastEdited)}</p>
+                <h3 class="note-title">${note.title || 'Untitled Note'}</h3>
+                <p class="note-meta">
+                    Last edited by <strong>${note.lastEditedBy || 'Unknown'}</strong> on<br>
+                    ${formatDate(note.lastEdited)}
+                </p>
             </div>
         `).join('');
 
@@ -597,30 +600,12 @@ function closeStatusModal() {
 // Utility functions
 function formatDate(dateString) {
     try {
-        // Try parsing as ISO string first
-        let date = new Date(dateString);
-        
-        // If that fails, try parsing the legacy format
-        if (isNaN(date.getTime())) {
-            // Extract date parts from legacy format (e.g., "Wednesday, June 4, 2024, 11:32 PM EDT")
-            const parts = dateString.split(', ');
-            if (parts.length >= 4) {
-                const [weekday, monthDay, yearTime] = parts;
-                const [month, day] = monthDay.split(' ');
-                const [year, time] = yearTime.split(' at ');
-                const [hours, minutes] = time.split(':');
-                
-                // Create date string in a format that can be parsed
-                const dateStr = `${month} ${day}, ${year} ${hours}:${minutes}`;
-                date = new Date(dateStr);
-            }
-        }
-        
+        const date = new Date(dateString);
         if (isNaN(date.getTime())) {
             return 'Invalid date';
         }
         
-        // Format: Wednesday, 04 June 2025 at 23:32
+        // Format: Wednesday 04 June 2025 at 23:32
         const options = {
             weekday: 'long',
             day: '2-digit',
@@ -631,7 +616,7 @@ function formatDate(dateString) {
             hour12: false
         };
         
-        return date.toLocaleString('en-US', options).replace(',', ' at');
+        return date.toLocaleString('en-US', options).replace(',', '');
     } catch (error) {
         console.error('Error formatting date:', error);
         return 'Invalid date';
