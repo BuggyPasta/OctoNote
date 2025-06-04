@@ -1,6 +1,5 @@
 const express = require('express');
 const path = require('path');
-const helmet = require('helmet');
 const morgan = require('morgan');
 const { createLogger, format, transports } = require('winston');
 const fs = require('fs').promises;
