@@ -15,28 +15,49 @@ const statusRouter = require('./routes/status');
 const app = express();
 const port = 51828;
 
-// Configure Winston logger
-const logger = createLogger({
-  format: format.combine(
-    format.timestamp(),
-    format.json()
-  ),
-  transports: [
-    new transports.File({ 
-      filename: '/data/octonote/logs/error.log', 
-      level: 'error' 
-    }),
-    new transports.File({ 
-      filename: '/data/octonote/logs/combined.log' 
-    })
-  ]
-});
+// Initialize data directory
+async function initializeDataDirectory() {
+  try {
+    await fs.mkdir('/data/octonote/notes', { recursive: true });
+    await fs.mkdir('/data/octonote/logs', { recursive: true });
+    
+    // Create users.txt if it doesn't exist
+    try {
+      await fs.access('/data/octonote/users.txt');
+    } catch {
+      await fs.writeFile('/data/octonote/users.txt', '', 'utf8');
+    }
+  } catch (error) {
+    console.error('Error initializing data directory:', error);
+    process.exit(1);
+  }
+}
 
-// Add console transport in development
-if (process.env.NODE_ENV !== 'production') {
-  logger.add(new transports.Console({
-    format: format.simple()
-  }));
+// Configure Winston logger
+let logger;
+async function initializeLogger() {
+  logger = createLogger({
+    format: format.combine(
+      format.timestamp(),
+      format.json()
+    ),
+    transports: [
+      new transports.File({ 
+        filename: '/data/octonote/logs/error.log', 
+        level: 'error' 
+      }),
+      new transports.File({ 
+        filename: '/data/octonote/logs/combined.log' 
+      })
+    ]
+  });
+
+  // Add console transport in development
+  if (process.env.NODE_ENV !== 'production') {
+    logger.add(new transports.Console({
+      format: format.simple()
+    }));
+  }
 }
 
 // Security middleware
@@ -59,13 +80,6 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// Logging middleware
-app.use(morgan('combined', {
-  stream: {
-    write: message => logger.info(message.trim())
-  }
-}));
-
 // Body parsing
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -80,33 +94,29 @@ app.use('/api/status', statusRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  logger.error(err.stack);
+  if (logger) {
+    logger.error(err.stack);
+  } else {
+    console.error(err.stack);
+  }
   res.status(500).json({ error: 'Something went wrong!' });
 });
 
-// Initialize data directory
-async function initializeDataDirectory() {
-  try {
-    await fs.mkdir('/data/octonote/notes', { recursive: true });
-    await fs.mkdir('/data/octonote/logs', { recursive: true });
-    
-    // Create users.txt if it doesn't exist
-    try {
-      await fs.access('/data/octonote/users.txt');
-    } catch {
-      await fs.writeFile('/data/octonote/users.txt', '', 'utf8');
-    }
-    
-    logger.info('Data directory initialized successfully');
-  } catch (error) {
-    logger.error('Error initializing data directory:', error);
-    process.exit(1);
-  }
-}
-
 // Start server
-initializeDataDirectory().then(() => {
+async function startServer() {
+  await initializeDataDirectory();
+  await initializeLogger();
+  
+  // Add logging middleware after logger is initialized
+  app.use(morgan('combined', {
+    stream: {
+      write: message => logger.info(message.trim())
+    }
+  }));
+
   app.listen(port, () => {
     logger.info(`OctoNote server listening on port ${port}`);
   });
-}); 
+}
+
+startServer(); 
