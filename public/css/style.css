@@ -142,6 +142,7 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 100%;
 }
 
 .note-meta {
@@ -199,8 +200,9 @@ header {
     flex: 1;
     min-width: 60px;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    gap: 4px;
 }
 
 .action-button:hover {
@@ -213,30 +215,42 @@ header {
     display: block;
 }
 
+.action-button::after {
+    content: attr(title);
+    font-size: 0.8em;
+    color: var(--text-color);
+}
+
 .copy-button {
     width: 100%;
     margin-top: 10px;
-    background: var(--primary-color);
-    color: white;
+    background: none;
+    color: var(--primary-color);
     border: none;
     border-radius: 4px;
     padding: 12px;
     cursor: pointer;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 4px;
     transition: background-color 0.2s;
 }
 
 .copy-button:hover {
-    background-color: var(--secondary-color);
+    background-color: var(--hover-background);
 }
 
 .copy-button img {
-    width: 20px;
-    height: 20px;
-    filter: brightness(0) invert(1);
+    width: 24px;
+    height: 24px;
+    display: block;
+}
+
+.copy-button::after {
+    content: "Copy";
+    font-size: 0.8em;
+    color: var(--text-color);
 }
 
 .note-content {
@@ -341,14 +355,19 @@ header {
 /* Status Modal */
 .status-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     margin-bottom: 20px;
+}
+
+.status-header h2 {
+    margin: 0;
 }
 
 .status-info {
     display: grid;
     gap: 15px;
+    margin-bottom: 20px;
 }
 
 .status-info p {
@@ -356,6 +375,21 @@ header {
     background: var(--card-background);
     border-radius: 4px;
     color: var(--text-color);
+}
+
+.close-button {
+    width: 100%;
+    padding: 12px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.close-button:hover {
+    background-color: var(--secondary-color);
 }
 
 /* New Note Button */
@@ -453,6 +487,10 @@ header {
     .modal-content {
         width: 95%;
         padding: 20px;
+    }
+
+    .note-card h3 {
+        text-align: center;
     }
 }
 

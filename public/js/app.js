@@ -503,8 +503,8 @@ async function createNewNote() {
 
 // Copy note content
 function copyNoteContent() {
-    const title = noteTitle.value;
-    const content = noteContent.value;
+    const title = document.getElementById('noteTitle').value;
+    const content = document.getElementById('noteContent').value;
     const textToCopy = `${title}\n\n${content}`;
     
     navigator.clipboard.writeText(textToCopy).then(() => {
@@ -528,10 +528,6 @@ async function showStatus() {
         const status = await response.json();
         const statusContent = document.getElementById('statusContent');
         statusContent.innerHTML = `
-            <div class="status-header">
-                <h2>System Status</h2>
-                <button class="close-button" onclick="closeStatusModal()">×</button>
-            </div>
             <div class="status-info">
                 <p>Server Status: ${status.status}</p>
                 <p>Uptime: ${status.uptime}</p>
@@ -539,6 +535,7 @@ async function showStatus() {
                 <p>Active Users: ${status.activeUsers}</p>
                 <p>Total Notes: ${status.totalNotes}</p>
             </div>
+            <button class="close-button" onclick="closeStatusModal()">Close</button>
         `;
         statusModal.classList.remove('hidden');
     } catch (error) {
