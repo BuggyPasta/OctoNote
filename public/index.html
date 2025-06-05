@@ -9,14 +9,18 @@
 </head>
 <body class="app-container">
     <header>
-        <div class="logo">
-            <button id="homeButton" class="logo-button">
-                <img src="/icons/octonote.svg" alt="OctoNote Logo">
+        <div class="logo-container">
+            <img src="icons/logo.svg" alt="OctoNote Logo" class="logo">
+            <span class="app-title"><span class="octo">Octo</span><span class="note">Note</span></span>
+        </div>
+        <div class="header-actions">
+            <button id="newNoteBtn" class="icon-button" title="New Note">
+                <img src="icons/new.svg" alt="New Note">
+            </button>
+            <button id="printBtn" class="icon-button" title="Print">
+                <img src="icons/print.svg" alt="Print">
             </button>
         </div>
-        <button id="menuButton" class="menu-button">
-            <img src="/icons/menu.svg" alt="Menu">
-        </button>
     </header>
 
     <div id="menu" class="menu hidden">
@@ -41,25 +45,18 @@
 
         <div id="noteEditor" class="note-editor hidden">
             <div class="note-view">
-                <input type="text" id="noteTitle" class="note-title" placeholder="Tap or click to type a Title">
-                <textarea id="noteContent" class="note-content" placeholder="Tap or click to type your Notes"></textarea>
+                <input type="text" id="noteTitle" class="note-title" placeholder="Title">
+                <textarea id="noteContent" class="note-content" placeholder="Replace this with your note..."></textarea>
                 <div class="note-actions">
-                    <button id="backButton" class="action-button" title="Back">
-                        <img src="/icons/back.svg" alt="Back">
+                    <button id="deleteNoteBtn" class="action-button delete-button" title="Delete Note">
+                        <img src="icons/delete_note.svg" alt="Delete Note">
+                        <span>Delete</span>
                     </button>
-                    <button id="saveButton" class="action-button" title="Save">
-                        <img src="/icons/save.svg" alt="Save">
-                    </button>
-                    <button id="discardButton" class="action-button" title="Discard">
-                        <img src="/icons/discard.svg" alt="Discard">
-                    </button>
-                    <button id="reloadButton" class="action-button" title="Reload">
-                        <img src="/icons/reload.svg" alt="Reload">
+                    <button id="copyBtn" class="action-button" title="Copy to Clipboard">
+                        <img src="icons/copy.svg" alt="Copy">
+                        <span>Copy</span>
                     </button>
                 </div>
-                <button id="copyButton" class="copy-button">
-                    <img src="/icons/copy.svg" alt="Copy">
-                </button>
             </div>
         </div>
     </main>
@@ -78,6 +75,17 @@
     <div id="statusModal" class="modal hidden">
         <div class="modal-content">
             <div id="statusContent"></div>
+        </div>
+    </div>
+
+    <div id="deleteConfirmModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Delete Note</h2>
+            <p>Are you sure you want to delete this note? This action is not reversible!</p>
+            <div class="modal-actions">
+                <button id="cancelDeleteBtn" class="modal-button">No, do NOT delete it</button>
+                <button id="confirmDeleteBtn" class="modal-button delete">Yes, delete it for ever</button>
+            </div>
         </div>
     </div>
 

@@ -69,6 +69,61 @@ document.getElementById('reloadButton').addEventListener('click', reloadNote);
 // Add copy button functionality
 document.getElementById('copyButton').addEventListener('click', copyNoteContent);
 
+// Add delete note functionality
+const deleteNoteBtn = document.getElementById('deleteNoteBtn');
+const deleteConfirmModal = document.getElementById('deleteConfirmModal');
+const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+
+deleteNoteBtn.addEventListener('click', () => {
+    deleteConfirmModal.classList.remove('hidden');
+});
+
+cancelDeleteBtn.addEventListener('click', () => {
+    deleteConfirmModal.classList.add('hidden');
+});
+
+confirmDeleteBtn.addEventListener('click', async () => {
+    if (!currentNoteId) return;
+
+    try {
+        const response = await fetch(`/api/notes/${currentNoteId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ user: currentUser })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to delete note');
+        }
+
+        // Release the lock
+        await fetch(`/api/notes/${currentNoteId}/lock`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ user: currentUser })
+        });
+
+        // Update UI
+        deleteConfirmModal.classList.add('hidden');
+        noteEditor.classList.add('hidden');
+        notesList.classList.remove('hidden');
+        currentNoteId = null;
+        
+        // Refresh the notes list
+        loadNotes();
+        
+        showFeedback('Note deleted successfully', 'success');
+    } catch (error) {
+        console.error('Error deleting note:', error);
+        showFeedback(error.message, 'error');
+    }
+});
+
 // Initialize the app
 async function initializeApp() {
     // Add createUserButton event listener after DOM is loaded
@@ -455,8 +510,8 @@ async function createNewNote() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                title: 'New Note',
-                content: 'Start writing your note here...',
+                title: 'Title',
+                content: 'Replace this with your note...',
                 user: currentUser
             })
         });
@@ -483,8 +538,8 @@ async function createNewNote() {
         }
         
         // Update UI
-        noteTitle.value = 'New Note';
-        noteContent.value = 'Start writing your note here...';
+        noteTitle.value = 'Title';
+        noteContent.value = 'Replace this with your note...';
         noteEditor.classList.remove('hidden');
         notesList.classList.add('hidden');
         

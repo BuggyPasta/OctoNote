@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   octonote:
     build:
@@ -19,6 +21,8 @@ services:
       start_period: 10s
     networks:
       - octonote_network
+    labels:
+      - com.centurylinklabs.watchtower.enable=false
 
 volumes:
   octonote_data:
