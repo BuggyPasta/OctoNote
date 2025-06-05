@@ -1,6 +1,6 @@
 /* Variables for the color scheme - tailored for dark mode */
 :root {
-    --primary-color: #7B68EE; /* Medium Slate Blue - Used for accents, titles, borders, and button text */
+    --primary-color: #42A5F5; /* Vibrant Blue - Used for accents, titles, borders, and button text */
     --header-bg: #1E1E2E; /* Dark Navy - Header and menu background */
     --button-bg: #2D2D44; /* Lighter Navy - General button background */
     --button-hover: #1E1E2E; /* Hover state for general buttons */
