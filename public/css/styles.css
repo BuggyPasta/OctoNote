@@ -6,6 +6,8 @@
     --button-text: white;
     --error-color: #e74c3c;
     --error-hover: #c0392b;
+    --text-primary: var(--primary-color);
+    --text-secondary: white;
 }
 
 body {
@@ -61,18 +63,10 @@ header {
 }
 
 .app-title .octo {
-    color: var(--text-primary);
-}
-
-.app-title .note {
-    color: var(--text-secondary);
-}
-
-.octo {
     color: var(--primary-color);
 }
 
-.note {
+.app-title .note {
     color: white;
 }
 
