@@ -83,12 +83,11 @@ confirmDeleteButton.addEventListener('click', async () => {
     if (!currentNoteId) return;
 
     try {
-        const response = await fetch(`/api/notes/${currentNoteId}/delete`, {
-            method: 'POST',
+        const response = await fetch(`/api/notes/${currentNoteId}?user=${encodeURIComponent(currentUser)}`, {
+            method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ user: currentUser })
+            }
         });
 
         if (!response.ok) {
