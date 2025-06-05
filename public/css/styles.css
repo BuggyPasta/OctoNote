@@ -35,12 +35,6 @@ header {
     width: auto;
 }
 
-.app-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-left: 0.5rem;
-}
-
 .octo {
     color: var(--primary-color);
 }
@@ -123,14 +117,6 @@ header {
     background-color: var(--button-hover);
 }
 
-.action-button.delete-button {
-    background-color: var(--error-color);
-}
-
-.action-button.delete-button:hover {
-    background-color: var(--error-hover);
-}
-
 .action-button img {
     height: 1.25rem;
     width: auto;
@@ -165,13 +151,4 @@ header {
 
 .modal-button:not(.delete):hover {
     background-color: var(--button-hover);
-}
-
-.modal-button.delete {
-    background-color: var(--error-color);
-    color: white;
-}
-
-.modal-button.delete:hover {
-    background-color: var(--error-hover);
 } 

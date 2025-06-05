@@ -13,7 +13,6 @@
             <button id="homeButton" class="logo-button">
                 <img src="/icons/octonote.svg" alt="OctoNote Logo">
             </button>
-            <span class="app-title"><span class="octo">Octo</span><span class="note">Note</span></span>
         </div>
         <button id="menuButton" class="menu-button">
             <img src="/icons/menu.svg" alt="Menu">
@@ -63,10 +62,6 @@
                     </button>
                 </div>
                 <div class="note-actions">
-                    <button id="deleteNoteBtn" class="action-button delete-button" title="Delete Note">
-                        <img src="/icons/delete_note.svg" alt="Delete Note">
-                        <span>Delete</span>
-                    </button>
                     <button id="copyButton" class="action-button" title="Copy to Clipboard">
                         <img src="/icons/copy.svg" alt="Copy">
                         <span>Copy</span>
@@ -90,17 +85,6 @@
     <div id="statusModal" class="modal hidden">
         <div class="modal-content">
             <div id="statusContent"></div>
-        </div>
-    </div>
-
-    <div id="deleteConfirmModal" class="modal hidden">
-        <div class="modal-content">
-            <h2>Delete Note</h2>
-            <p>Are you sure you want to delete this note? This action is not reversible!</p>
-            <div class="modal-actions">
-                <button id="cancelDeleteBtn" class="modal-button">No, do NOT delete it</button>
-                <button id="confirmDeleteBtn" class="modal-button delete">Yes, delete it for ever</button>
-            </div>
         </div>
     </div>
 
