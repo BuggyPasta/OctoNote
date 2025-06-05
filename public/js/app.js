@@ -65,21 +65,21 @@ document.getElementById('reloadButton').addEventListener('click', reloadNote);
 // Add copy button functionality
 document.getElementById('copyButton').addEventListener('click', copyNoteContent);
 
-// Add delete note functionality
-const deleteNoteBtn = document.getElementById('deleteNoteBtn');
+// Add delete button functionality
+const deleteButton = document.getElementById('deleteButton');
 const deleteConfirmModal = document.getElementById('deleteConfirmModal');
-const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
-const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+const cancelDeleteButton = document.getElementById('cancelDeleteButton');
+const confirmDeleteButton = document.getElementById('confirmDeleteButton');
 
-deleteNoteBtn.addEventListener('click', () => {
+deleteButton.addEventListener('click', () => {
     deleteConfirmModal.classList.remove('hidden');
 });
 
-cancelDeleteBtn.addEventListener('click', () => {
+cancelDeleteButton.addEventListener('click', () => {
     deleteConfirmModal.classList.add('hidden');
 });
 
-confirmDeleteBtn.addEventListener('click', async () => {
+confirmDeleteButton.addEventListener('click', async () => {
     if (!currentNoteId) return;
 
     try {
@@ -111,7 +111,7 @@ confirmDeleteBtn.addEventListener('click', async () => {
         currentNoteId = null;
         
         // Refresh the notes list
-        loadNotes();
+        await loadNotes();
         
         showFeedback('Note deleted successfully', 'success');
     } catch (error) {
@@ -137,7 +137,7 @@ async function initializeApp() {
 
 // Close menu when clicking outside
 document.addEventListener('click', (event) => {
-    if (!menu.contains(event.target) && event.target !== menuButton) {
+    if (!menu.contains(event.target) && event.target !== menuButton && !menu.classList.contains('hidden')) {
         menu.classList.add('hidden');
     }
 });
@@ -636,5 +636,8 @@ window.addEventListener('click', (event) => {
     }
     if (event.target === statusModal) {
         statusModal.classList.add('hidden');
+    }
+    if (event.target === deleteConfirmModal) {
+        deleteConfirmModal.classList.add('hidden');
     }
 }); 

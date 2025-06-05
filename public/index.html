@@ -59,6 +59,10 @@
                     </button>
                 </div>
                 <div class="note-actions">
+                    <button id="deleteButton" class="action-button" title="Delete Note">
+                        <img src="/icons/note_delete.svg" alt="Delete">
+                        <span>Delete Note</span>
+                    </button>
                     <button id="copyButton" class="action-button" title="Copy to Clipboard">
                         <img src="/icons/copy.svg" alt="Copy">
                         <span>Copy</span>
@@ -67,6 +71,17 @@
             </div>
         </div>
     </main>
+
+    <div id="deleteConfirmModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Delete Note</h2>
+            <p>Are you sure you want to delete this note? This action is not reversible!</p>
+            <div class="modal-actions">
+                <button id="cancelDeleteButton" class="modal-button">No, do NOT delete it</button>
+                <button id="confirmDeleteButton" class="modal-button delete">Yes, delete it for ever</button>
+            </div>
+        </div>
+    </div>
 
     <div id="userModal" class="modal hidden">
         <div class="modal-content">
