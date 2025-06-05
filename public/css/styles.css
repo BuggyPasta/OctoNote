@@ -207,6 +207,15 @@ main {
     margin-top: 1rem;
 }
 
+.note-actions:first-child {
+    justify-content: space-between;
+}
+
+.note-actions:first-child .action-button {
+    flex: 1;
+    max-width: calc(33.333% - 0.5rem);
+}
+
 .note-actions:last-child {
     justify-content: space-between;
 }
