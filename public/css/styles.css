@@ -207,19 +207,15 @@ main {
     margin-top: 1rem;
 }
 
-/* Style for the first row of buttons (Save, Discard, Revert) */
 .note-actions:first-child {
     justify-content: space-between;
 }
 
 .note-actions:first-child .action-button {
-    flex-grow: 1;
-    flex-shrink: 1;
-    flex-basis: 0;
-    max-width: none; /* Remove or override previous max-width */
+    flex: 1;
+    max-width: none;
 }
 
-/* Style for the second row of buttons (Delete Note, Copy) */
 .note-actions:last-child {
     justify-content: space-between;
 }
@@ -228,7 +224,6 @@ main {
     flex: 1;
 }
 
-/* General action button styles (applies to all) */
 .action-button {
     display: flex;
     flex-direction: column;
@@ -245,8 +240,8 @@ main {
 }
 
 .action-button img {
-    height: 1.5rem; /* Increased icon height */
-    width: 1.5rem;  /* Increased icon width */
+    height: 1.875rem;
+    width: 1.875rem;
     filter: var(--icon-filter);
 }
 
@@ -391,8 +386,8 @@ main {
     }
 
     .action-button img {
-        height: 1.2rem; /* Increased icon height for mobile */
-        width: 1.2rem;  /* Increased icon width for mobile */
+        height: 1.5rem;
+        width: 1.5rem;
         margin-bottom: 0.25rem;
     }
 
@@ -405,7 +400,6 @@ main {
     }
 }
 
-/* Add touch handling for mobile */
 @media (hover: none) {
     .note-card {
         -webkit-tap-highlight-color: transparent;
@@ -415,4 +409,4 @@ main {
         transform: translateY(-2px);
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
-} 
+}
