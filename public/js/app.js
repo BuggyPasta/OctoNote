@@ -83,8 +83,8 @@ confirmDeleteButton.addEventListener('click', async () => {
     if (!currentNoteId) return;
 
     try {
-        const response = await fetch(`/api/notes/${currentNoteId}`, {
-            method: 'DELETE',
+        const response = await fetch(`/api/notes/${currentNoteId}/delete`, {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -96,8 +96,8 @@ confirmDeleteButton.addEventListener('click', async () => {
         }
 
         // Release the lock
-        await fetch(`/api/notes/${currentNoteId}/lock`, {
-            method: 'DELETE',
+        await fetch(`/api/notes/${currentNoteId}/unlock`, {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
