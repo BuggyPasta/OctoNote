@@ -83,6 +83,16 @@ confirmDeleteButton.addEventListener('click', async () => {
     if (!currentNoteId) return;
 
     try {
+        // Release the lock first
+        await fetch(`/api/notes/${currentNoteId}/unlock`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ user: currentUser })
+        });
+
+        // Then attempt to delete the note
         const response = await fetch(`/api/notes/${currentNoteId}?user=${encodeURIComponent(currentUser)}`, {
             method: 'DELETE',
             headers: {
@@ -91,17 +101,10 @@ confirmDeleteButton.addEventListener('click', async () => {
         });
 
         if (!response.ok) {
+            // If deletion fails after unlock, re-acquire lock if necessary? Or just show error?
+            // For now, just throw error.
             throw new Error('Failed to delete note');
         }
-
-        // Release the lock
-        await fetch(`/api/notes/${currentNoteId}/unlock`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ user: currentUser })
-        });
 
         // Update UI
         deleteConfirmModal.classList.add('hidden');
@@ -116,6 +119,9 @@ confirmDeleteButton.addEventListener('click', async () => {
     } catch (error) {
         console.error('Error deleting note:', error);
         showFeedback(error.message, 'error');
+        // If deletion failed, we should probably try to re-acquire the lock
+        // to prevent other users from editing a note that couldn't be deleted.
+        // This is a more complex error handling scenario.
     }
 });
 
