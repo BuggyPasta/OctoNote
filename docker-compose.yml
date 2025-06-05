@@ -29,7 +29,4 @@ volumes:
 networks:
   octonote_network:
     name: octonote_network
-    driver: bridge
-
-labels:
-  - com.centurylinklabs.watchtower.enable=false 
+    driver: bridge 
