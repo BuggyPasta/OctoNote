@@ -1,3 +1,13 @@
+:root {
+    --primary-color: #4a90e2;
+    --header-bg: #2c3e50;
+    --button-bg: #34495e;
+    --button-hover: #2c3e50;
+    --button-text: white;
+    --error-color: #e74c3c;
+    --error-hover: #c0392b;
+}
+
 header {
     display: flex;
     justify-content: space-between;
@@ -7,13 +17,20 @@ header {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.logo-container {
+.logo {
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
-.logo {
+.logo-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.logo-button img {
     height: 2rem;
     width: auto;
 }
@@ -21,6 +38,7 @@ header {
 .app-title {
     font-size: 1.5rem;
     font-weight: bold;
+    margin-left: 0.5rem;
 }
 
 .octo {
@@ -31,9 +49,52 @@ header {
     color: white;
 }
 
-.header-actions {
+.menu-button {
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+}
+
+.menu-button img {
+    height: 1.5rem;
+    width: auto;
+}
+
+.menu {
+    position: absolute;
+    top: 4rem;
+    right: 1rem;
+    background-color: var(--header-bg);
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.menu.hidden {
+    display: none;
+}
+
+.menu-item {
     display: flex;
-    gap: 1rem;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: none;
+    background: none;
+    color: white;
+    cursor: pointer;
+    text-align: left;
+}
+
+.menu-item:hover {
+    background-color: var(--button-bg);
+}
+
+.menu-item img {
+    height: 1.25rem;
+    width: auto;
 }
 
 .note-actions {
@@ -68,6 +129,11 @@ header {
 
 .action-button.delete-button:hover {
     background-color: var(--error-hover);
+}
+
+.action-button img {
+    height: 1.25rem;
+    width: auto;
 }
 
 .modal-actions {
