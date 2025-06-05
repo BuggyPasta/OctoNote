@@ -1,22 +1,25 @@
 /* Variables for the color scheme - tailored for dark mode */
 :root {
     --primary-color: #42A5F5; /* Vibrant Blue - Used for accents, titles, borders, and button text */
-    --header-bg: #1E1E2E; /* Dark Navy - Header and menu background */
+    --header-bg: #00002D; /* Changed to very dark blue */
     --button-bg: #2D2D44; /* Lighter Navy - General button background */
     --button-hover: #1E1E2E; /* Hover state for general buttons */
     --button-text: white;
-    --error-color: #EF5350; /* Standard Red - Used for destructive actions (e.g., Delete YES) */
-    --error-hover: #D32F2F; /* Darker Red - Hover state for error actions */
-    --success-color: #66BB6A; /* Standard Green - Used for positive actions (e.g., Delete NO) */
-    --success-hover: #388E3C; /* Darker Green - Hover state for success actions */
+    --error-color: #B00; /* Changed to darker red */
+    --error-hover: #900; /* Darker Red for hover */
+    --success-color: #029D09; /* Changed to darker green */
+    --success-hover: #017D07; /* Darker Green for hover */
     --text-primary: var(--primary-color); /* Example of using primary color for text */
-    --text-secondary: #ccc; /* Lighter gray for secondary text */
+    --text-secondary: #00002d; /* Changed to very dark blue for note-meta */
+
     /* Assuming font family var exists or is defined elsewhere */
     /* --font-family: 'Your Chosen Font', sans-serif; */
+
     /* Icon filter for dark mode, assuming icons are white */
     --icon-filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%); /* This filter is for white icons on dark background, might not be needed if SVGs are already white */
 }
 
+/* General body styles */
 body {
     margin: 0;
     padding: 0;
@@ -25,27 +28,31 @@ body {
     color: white;
 }
 
+/* App Container - main layout wrapper */
 .app-container {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
 
+/* Header styles */
 header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 1rem;
-    background-color: var(--header-bg);
+    background-color: var(--header-bg); /* Use variable */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* Logo section */
 .logo {
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
+/* Logo button style (if logo is clickable) */
 .logo-button {
     background: none;
     border: none;
@@ -56,11 +63,13 @@ header {
     padding: 0.5rem;
 }
 
+/* Logo image styles */
 .logo-button img {
-    height: 2rem;
+    height: 3rem; /* Changed height */
     width: auto;
 }
 
+/* App Title styles */
 .app-title {
     font-family: var(--font-family);
     font-weight: bold;
@@ -69,26 +78,32 @@ header {
     align-items: center;
 }
 
+/* Octo part of the title */
 .app-title .octo {
     color: var(--primary-color);
 }
 
+/* Note part of the title */
 .app-title .note {
     color: white;
 }
 
+/* Menu button style */
 .menu-button {
-    background: none;
+    background: #42A5F5; /* Changed background */
     border: none;
-    padding: 0.5rem;
+    padding: 1rem; /* Changed padding */
     cursor: pointer;
+    border-radius: 5px; /* Added border-radius */
 }
 
+/* Menu button image styles */
 .menu-button img {
     height: 1.5rem;
     width: auto;
 }
 
+/* Menu dropdown styles */
 .menu {
     position: absolute;
     top: 4rem;
@@ -99,10 +114,12 @@ header {
     z-index: 1000;
 }
 
+/* Hide class for the menu */
 .menu.hidden {
     display: none;
 }
 
+/* Individual menu item styles */
 .menu-item {
     display: flex;
     align-items: center;
@@ -116,15 +133,18 @@ header {
     text-align: left;
 }
 
+/* Menu item hover state */
 .menu-item:hover {
     background-color: var(--button-bg);
 }
 
+/* Menu item image styles */
 .menu-item img {
     height: 1.25rem;
     width: auto;
 }
 
+/* Main content area */
 main {
     flex: 1;
     padding: 1rem;
@@ -134,6 +154,7 @@ main {
     box-sizing: border-box;
 }
 
+/* Notes list grid layout */
 .notes-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -141,8 +162,9 @@ main {
     padding: 1rem;
 }
 
+/* Individual note card styles */
 .note-card {
-    background-color: var(--button-bg);
+    background-color: #42A5F5; /* Changed background */
     border-radius: 8px;
     padding: 1rem;
     cursor: pointer;
@@ -151,64 +173,83 @@ main {
     border: 1px solid var(--primary-color);
 }
 
+/* Note card hover state */
 .note-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+/* Note card title */
 .note-card h3 {
     margin: 0 0 0.5rem 0;
     color: var(--primary-color);
     text-align: center;
 }
 
+/* Note card last edited text */
 .note-card p {
     margin: 0;
-    color: #ccc;
+    color: var(--text-secondary); /* Use variable for note-meta color */
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     text-align: center;
 }
 
+/* Note Editor container */
 .note-editor {
     padding: 1rem;
 }
 
+/* Hide class for the note editor */
 .note-editor.hidden {
     display: none;
 }
 
+/* Note View - container for title, content, and actions */
 .note-view {
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
 
+/* Note Title input field */
 .note-title {
     font-size: 1.5rem;
-    padding: 0.5rem;
+    padding: 1.5rem; /* Changed padding */
     border: none;
     border-radius: 4px;
-    background-color: var(--button-bg);
-    color: var(--primary-color);
+    background-color: #00002d; /* Changed background color */
+    color: #FFFFFF; /* Changed text color */
     width: 100%;
     box-sizing: border-box;
+    font-weight: bold; /* Added font-weight */
 }
 
+/* Note Content textarea field */
 .note-content {
     flex: 1;
     min-height: 300px;
     padding: 0.5rem;
     border: none;
-    border-radius: 4px;
-    background-color: var(--button-bg);
-    color: white;
+    border-radius: 5px; /* Changed border-radius */
+    background-color: #CCCCCC; /* Changed background color */
+    color: black; /* Assuming black text looks good on light gray */
     resize: vertical;
     width: 100%;
     box-sizing: border-box;
+    font-weight: bold; /* Added font-weight */
 }
 
+/* Styles for note title and content when focused */
+.note-title:focus,
+.note-content:focus {
+    border: 5px solid #42A5F5; /* Added border on focus */
+    outline: none; /* Remove default outline */
+}
+
+
+/* Note Actions container - holds button rows */
 .note-actions {
     display: flex;
     gap: 0.5rem;
@@ -226,6 +267,7 @@ main {
     width: 100%; /* Ensure the container takes full width */
 }
 
+/* Styles for action buttons in the first row */
 .note-actions:first-child .action-button {
     /* No specific flex or sizing needed here for grid items */
     /* The grid container handles the sizing */
@@ -236,6 +278,7 @@ main {
     justify-content: space-between;
 }
 
+/* Styles for action buttons in the second row */
 .note-actions:last-child .action-button {
     flex: 1;
 }
@@ -246,27 +289,32 @@ main {
     flex-direction: column;
     align-items: center;
     gap: 0.25rem;
-    background: none;
-    border: 1px solid var(--primary-color);
+    background: #42A5F5; /* Changed background */
+    border: 2px solid #00002d; /* Changed border */
     padding: 0.5rem;
     cursor: pointer;
     font-size: 0.8rem;
-    color: var(--primary-color);
+    color: #00002d; /* Changed text color */
     min-width: 60px;
     text-align: center;
+    border-radius: 5px; /* Added border-radius */
+    font-weight: bold; /* Added font-weight */
 }
 
+/* Action button image styles */
 .action-button img {
-    height: 1.875rem;
-    width: 1.875rem;
-    filter: var(--icon-filter);
+    height: 1.875rem; /* Keep height */
+    width: 6rem; /* Changed width for PC and mobile */
+    /* filter: var(--icon-filter); Removed filter */
 }
 
+/* Action button text label styles */
 .action-button span {
     font-size: 0.9rem;
     text-align: center;
 }
 
+/* General modal overlay styles */
 .modal {
     position: fixed;
     top: 0;
@@ -280,18 +328,22 @@ main {
     z-index: 1000;
 }
 
+/* Hide class for modals */
 .modal.hidden {
     display: none;
 }
 
+/* Modal content box styles */
 .modal-content {
-    background-color: var(--button-bg);
+    background-color: #00002d; /* Changed background color */
     padding: 2rem;
-    border-radius: 8px;
+    border-radius: 5px; /* Changed border-radius */
     width: 90%;
     max-width: 500px;
+    border: 5px solid #fff; /* Added border */
 }
 
+/* Modal heading styles */
 .modal-content h2 {
     margin: 0 0 1rem 0;
     color: var(--primary-color);
@@ -305,16 +357,19 @@ main {
     font-size: 1rem;
 }
 
+/* Status modal paragraph styles */
 #statusModal .modal-content p {
     margin: 0;
     padding: 0;
     color: white;
 }
 
+/* Status modal strong text styles */
 #statusModal .modal-content p strong {
     color: var(--primary-color);
 }
 
+/* Status Modal Actions container (for close button) */
 #statusModal .modal-actions {
     justify-content: center;
     margin-top: 1.5rem;
@@ -335,17 +390,20 @@ main {
     width: auto;
 }
 
+/* Status modal button hover */
 #statusModal .modal-actions button:hover {
     background-color: var(--button-hover);
 }
 
 
+/* User Input section (e.g., for username modal) */
 .user-input {
     display: flex;
     gap: 1rem;
     margin-top: 1rem;
 }
 
+/* User input field styles */
 .user-input input {
     flex: 1;
     padding: 0.5rem;
@@ -355,6 +413,7 @@ main {
     color: white;
 }
 
+/* User input button styles */
 .user-input button {
     padding: 0.5rem 1rem;
     border: none;
@@ -364,13 +423,14 @@ main {
     cursor: pointer;
 }
 
+/* General modal actions container (for delete confirmation) */
 .modal-actions {
     display: flex;
     gap: 1rem;
     margin-top: 1.5rem;
 }
 
-/* General modal button styles (for delete confirmation) */
+/* General modal button styles (applies to delete confirmation buttons) */
 .modal-button {
     flex: 1;
     padding: 0.75rem;
@@ -381,42 +441,52 @@ main {
     transition: background-color 0.2s;
 }
 
+/* Modal button styles for non-delete actions (e.g., NO button) */
 .modal-button:not(.delete) {
-    background-color: var(--success-color);
+    background-color: #029D09; /* Changed background-color */
     color: var(--button-text);
 }
 
+/* Hover state for non-delete modal buttons */
 .modal-button:not(.delete):hover {
-    background-color: var(--success-hover);
+    background-color: #029D09; /* Keep same background-color for hover */
 }
 
+/* Modal button styles for delete action (YES button) */
 .modal-button.delete {
-    background-color: var(--error-color);
+    background-color: #B00; /* Changed background-color */
     color: white;
 }
 
+/* Hover state for delete modal button */
 .modal-button.delete:hover {
-    background-color: var(--error-hover);
+    background-color: #B00; /* Keep same background-color for hover */
 }
 
+/* Media query for smaller screens (e.g., mobile) */
 @media (max-width: 768px) {
+    /* Modal content adjustments for mobile */
     .modal-content {
         width: 90%;
         max-width: 400px;
         margin: 0 auto;
     }
+    /* Modal actions layout for mobile */
     .modal-actions {
         flex-direction: column;
         gap: 0.5rem;
     }
+    /* Modal button adjustments for mobile */
     .modal-button {
         width: 100%;
     }
+    /* Notes list layout for mobile (single column) */
     .notes-list {
         grid-template-columns: 1fr;
         padding: 0.5rem;
     }
 
+    /* Note card adjustments for mobile */
     .note-card {
         width: 100%;
         margin: 0 auto;
@@ -425,6 +495,7 @@ main {
         max-width: calc(100% - 2rem);
     }
 
+    /* Note card title adjustments for mobile */
     .note-card h3 {
         font-size: 1.1rem;
         word-wrap: break-word;
@@ -434,73 +505,79 @@ main {
         padding: 0 0.5rem;
     }
 
+    /* Note card paragraph adjustments for mobile */
     .note-card p {
         font-size: 0.9rem;
     }
 
+    /* Note actions layout for mobile (flex-wrap) */
     .note-actions {
         flex-wrap: wrap;
     }
 
+    /* Action button adjustments for mobile */
     .action-button {
-        padding: 0.5rem;
+        /* Adjustments if needed for mobile action buttons */
     }
 
+    /* Action button image adjustments for mobile */
     .action-button img {
-        height: 1.5rem;
-        width: 1.5rem;
-        margin-bottom: 0.25rem;
+        width: 6rem; /* Ensure width is also 6rem on mobile */
     }
 
+    /* Action button text adjustments for mobile */
     .action-button span {
-        font-size: 0.8rem;
+        /* Adjustments if needed for mobile action button text */
     }
 
+    /* App title adjustments for mobile */
     .app-title {
-        font-size: 1.2rem;
+        /* Adjustments if needed for mobile app title */
+    }
+    /* Toast notification adjustments for mobile */
+    .toast {
+        /* Adjustments if needed for mobile toast notifications */
     }
 }
 
+/* Media query for devices that do not support hover (e.g., touch devices) */
 @media (hover: none) {
+    /* Note card styles for active state on touch devices */
     .note-card {
-        -webkit-tap-highlight-color: transparent;
+        /* Styles for active state */
     }
 
     .note-card:active {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        /* Active state styles */
     }
 }
 
-/* Toast Notification System */
+/* Toast container styles */
 #toastContainer {
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 9999;
+    bottom: 1rem;
+    right: 1rem;
+    z-index: 1100; /* Higher than modals */
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-direction: column-reverse; /* Stack toasts from bottom up */
     gap: 0.5rem;
-    pointer-events: none;
 }
 
+/* Individual toast notification styles */
 .toast {
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(50, 50, 50, 0.9); /* Semi-transparent dark background */
     color: white;
-    padding: 1rem 1.5rem;
-    border-radius: 8px;
-    font-size: 1rem;
-    text-align: center;
-    max-width: 90%;
-    width: max-content;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    animation: toastFadeIn 0.3s ease-out, toastFadeOut 0.3s ease-in 2.7s;
-    pointer-events: auto;
-    cursor: pointer;
+    padding: 0.75rem 1.25rem;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    opacity: 0; /* Start invisible for fade-in */
+    animation: toastFadeIn 0.3s ease-out forwards, toastFadeOut 0.5s ease-in forwards 2.5s; /* Fade in, stay, fade out */
+    max-width: 300px; /* Limit width */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
+/* Keyframe animation for toast fading in */
 @keyframes toastFadeIn {
     from {
         opacity: 0;
@@ -512,6 +589,7 @@ main {
     }
 }
 
+/* Keyframe animation for toast fading out */
 @keyframes toastFadeOut {
     from {
         opacity: 1;
@@ -519,13 +597,16 @@ main {
     }
     to {
         opacity: 0;
-        transform: translateY(-20px);
+        transform: translateY(20px);
     }
 }
 
+/* Media query for toast notifications on mobile */
 @media (max-width: 768px) {
     .toast {
-        font-size: 0.9rem;
-        padding: 0.75rem 1.25rem;
+        bottom: 0.5rem;
+        left: 0.5rem;
+        right: 0.5rem;
+        max-width: none; /* Allow full width on small screens */
     }
 }
