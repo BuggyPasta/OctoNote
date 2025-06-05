@@ -207,18 +207,22 @@ main {
     margin-top: 1rem;
 }
 
+/* Corrected styles for the first row of buttons (Save, Discard, Revert) */
 .note-actions:first-child {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.5rem;
-    justify-content: initial;
-    width: 100%;
+    display: grid; /* Use grid display */
+    grid-template-columns: repeat(3, 1fr); /* Create 3 equal columns */
+    gap: 0.5rem; /* Add gap between grid items */
+    /* Remove previous flex properties if any conflicts */
+    justify-content: initial; /* Reset justify-content from flex */
+    width: 100%; /* Ensure the container takes full width */
 }
 
 .note-actions:first-child .action-button {
-    
+    /* No specific flex or sizing needed here for grid items */
+    /* The grid container handles the sizing */
 }
 
+/* Style for the second row of buttons (Delete Note, Copy) */
 .note-actions:last-child {
     justify-content: space-between;
 }
@@ -227,6 +231,7 @@ main {
     flex: 1;
 }
 
+/* General action button styles (applies to all) */
 .action-button {
     display: flex;
     flex-direction: column;
@@ -307,7 +312,8 @@ main {
     margin-top: 1.5rem;
 }
 
-#statusModal .modal-actions .modal-button {
+/* Corrected Status Modal Close Button Style */
+#statusModal .modal-actions button { /* Target the button directly within modal-actions */
     background-color: var(--button-bg);
     color: var(--button-text);
     padding: 0.75rem 1.5rem;
@@ -316,11 +322,15 @@ main {
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.2s;
+    /* Ensure it doesn't try to flex like other modal buttons */
+    flex: none;
+    width: auto;
 }
 
-#statusModal .modal-actions .modal-button:hover {
+#statusModal .modal-actions button:hover {
     background-color: var(--button-hover);
 }
+
 
 .user-input {
     display: flex;
@@ -352,6 +362,7 @@ main {
     margin-top: 1.5rem;
 }
 
+/* General modal button styles (for delete confirmation) */
 .modal-button {
     flex: 1;
     padding: 0.75rem;
