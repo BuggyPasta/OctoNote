@@ -624,13 +624,21 @@ function formatDate(dateString) {
 }
 
 function showFeedback(message, type) {
-    const feedback = document.createElement('div');
-    feedback.className = `feedback ${type}`;
-    feedback.textContent = message;
-    document.body.appendChild(feedback);
-
+    const toastContainer = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = message;
+    
+    // Add click handler to dismiss toast
+    toast.addEventListener('click', () => {
+        toast.remove();
+    });
+    
+    toastContainer.appendChild(toast);
+    
+    // Remove the toast after animation completes
     setTimeout(() => {
-        feedback.remove();
+        toast.remove();
     }, 3000);
 }
 
