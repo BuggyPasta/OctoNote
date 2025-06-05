@@ -1,15 +1,20 @@
+/* Variables for the color scheme - tailored for dark mode */
 :root {
-    --primary-color: #4a90e2;
-    --header-bg: #2c3e50;
-    --button-bg: #34495e;
-    --button-hover: #2c3e50;
+    --primary-color: #7B68EE; /* Medium Slate Blue - Used for accents, titles, borders, and button text */
+    --header-bg: #1E1E2E; /* Dark Navy - Header and menu background */
+    --button-bg: #2D2D44; /* Lighter Navy - General button background */
+    --button-hover: #1E1E2E; /* Hover state for general buttons */
     --button-text: white;
-    --error-color: #e74c3c;
-    --error-hover: #c0392b;
-    --success-color: #2ecc71;
-    --success-hover: #27ae60;
-    --text-primary: var(--primary-color);
-    --text-secondary: white;
+    --error-color: #EF5350; /* Standard Red - Used for destructive actions (e.g., Delete YES) */
+    --error-hover: #D32F2F; /* Darker Red - Hover state for error actions */
+    --success-color: #66BB6A; /* Standard Green - Used for positive actions (e.g., Delete NO) */
+    --success-hover: #388E3C; /* Darker Green - Hover state for success actions */
+    --text-primary: var(--primary-color); /* Example of using primary color for text */
+    --text-secondary: #ccc; /* Lighter gray for secondary text */
+    /* Assuming font family var exists or is defined elsewhere */
+    /* --font-family: 'Your Chosen Font', sans-serif; */
+    /* Icon filter for dark mode, assuming icons are white */
+    --icon-filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%); /* This filter is for white icons on dark background, might not be needed if SVGs are already white */
 }
 
 body {
@@ -143,6 +148,7 @@ main {
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
     text-align: center;
+    border: 1px solid var(--primary-color);
 }
 
 .note-card:hover {
@@ -240,15 +246,14 @@ main {
     flex-direction: column;
     align-items: center;
     gap: 0.25rem;
+    background: none;
+    border: 1px solid var(--primary-color);
     padding: 0.5rem;
-    border: none;
-    border-radius: 4px;
-    background: var(--button-bg);
-    color: var(--button-text);
     cursor: pointer;
-    transition: all 0.2s ease;
-    min-width: 0;
-    box-sizing: border-box;
+    font-size: 0.8rem;
+    color: var(--primary-color);
+    min-width: 60px;
+    text-align: center;
 }
 
 .action-button img {
