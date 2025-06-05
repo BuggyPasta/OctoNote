@@ -208,12 +208,15 @@ main {
 }
 
 .note-actions:first-child {
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    justify-content: initial;
+    width: 100%;
 }
 
 .note-actions:first-child .action-button {
-    flex: 1;
-    max-width: none;
+    
 }
 
 .note-actions:last-child {
@@ -237,6 +240,7 @@ main {
     cursor: pointer;
     transition: all 0.2s ease;
     min-width: 0;
+    box-sizing: border-box;
 }
 
 .action-button img {
@@ -278,6 +282,44 @@ main {
 .modal-content h2 {
     margin: 0 0 1rem 0;
     color: var(--primary-color);
+}
+
+/* Status Modal Specific Styles */
+#statusModal .modal-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    font-size: 1rem;
+}
+
+#statusModal .modal-content p {
+    margin: 0;
+    padding: 0;
+    color: white;
+}
+
+#statusModal .modal-content p strong {
+    color: var(--primary-color);
+}
+
+#statusModal .modal-actions {
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+#statusModal .modal-actions .modal-button {
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    padding: 0.75rem 1.5rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#statusModal .modal-actions .modal-button:hover {
+    background-color: var(--button-hover);
 }
 
 .user-input {
