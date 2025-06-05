@@ -510,8 +510,8 @@ async function createNewNote() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                title: 'New Note',
-                content: 'Start writing your note here...',
+                title: 'Note Title',
+                content: 'Replace this with your note...',
                 user: currentUser
             })
         });
@@ -538,8 +538,8 @@ async function createNewNote() {
         }
         
         // Update UI
-        noteTitle.value = 'New Note';
-        noteContent.value = 'Start writing your note here...';
+        noteTitle.value = 'Note Title';
+        noteContent.value = 'Replace this with your note...';
         noteEditor.classList.remove('hidden');
         notesList.classList.add('hidden');
         

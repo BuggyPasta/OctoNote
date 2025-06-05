@@ -105,6 +105,86 @@ header {
     width: auto;
 }
 
+main {
+    flex: 1;
+    padding: 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.notes-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.note-card {
+    background-color: var(--button-bg);
+    border-radius: 8px;
+    padding: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.note-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.note-card h3 {
+    margin: 0 0 0.5rem 0;
+    color: var(--primary-color);
+}
+
+.note-card p {
+    margin: 0;
+    color: #ccc;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.note-editor {
+    padding: 1rem;
+}
+
+.note-editor.hidden {
+    display: none;
+}
+
+.note-view {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.note-title {
+    font-size: 1.5rem;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 4px;
+    background-color: var(--button-bg);
+    color: var(--primary-color);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.note-content {
+    flex: 1;
+    min-height: 300px;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 4px;
+    background-color: var(--button-bg);
+    color: white;
+    resize: vertical;
+    width: 100%;
+    box-sizing: border-box;
+}
+
 .note-actions {
     display: flex;
     justify-content: space-between;
@@ -134,6 +214,60 @@ header {
 .action-button img {
     height: 1.25rem;
     width: auto;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background-color: var(--button-bg);
+    padding: 2rem;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+}
+
+.modal-content h2 {
+    margin: 0 0 1rem 0;
+    color: var(--primary-color);
+}
+
+.user-input {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.user-input input {
+    flex: 1;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 4px;
+    background-color: #2c3e50;
+    color: white;
+}
+
+.user-input button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    background-color: var(--primary-color);
+    color: white;
+    cursor: pointer;
 }
 
 .modal-actions {
