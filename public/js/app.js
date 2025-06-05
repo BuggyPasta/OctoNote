@@ -55,10 +55,6 @@ document.getElementById('userSwitchButton').addEventListener('click', () => {
 });
 
 // Note action buttons
-document.getElementById('backButton').addEventListener('click', () => {
-    saveNote(true);
-});
-
 document.getElementById('saveButton').addEventListener('click', () => {
     saveNote(true);
 });
@@ -452,28 +448,6 @@ function discardChanges() {
     }
 }
 
-async function backToList() {
-    if (currentNoteId) {
-        try {
-            // Release the lock when going back
-            await fetch(`/api/notes/${currentNoteId}/unlock`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ user: currentUser })
-            });
-        } catch (error) {
-            console.error('Error releasing note lock:', error);
-        }
-    }
-    
-    currentNoteId = null;
-    noteEditor.classList.add('hidden');
-    notesList.classList.remove('hidden');
-    await loadNotes();
-}
-
 async function reloadNote() {
     if (currentNoteId) {
         try {
@@ -626,9 +600,9 @@ function formatDate(dateString) {
             return 'Invalid date';
         }
         
-        // Format: Wednesday 04 June 2025 at 23:32
+        // Format: WED 04 June 2025 at 23:32
         const options = {
-            weekday: 'long',
+            weekday: 'short',
             day: '2-digit',
             month: 'long',
             year: 'numeric',
