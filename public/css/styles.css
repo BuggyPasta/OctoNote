@@ -182,7 +182,7 @@ main {
 /* Note card title */
 .note-card h3 {
     margin: 0 0 0.5rem 0;
-    color: var(--primary-color);
+    color: #FFFFFF;
     text-align: center;
 }
 
@@ -555,12 +555,14 @@ main {
 /* Toast container styles */
 #toastContainer {
     position: fixed;
-    bottom: 1rem;
-    right: 1rem;
+    top: 50%; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Adjust for element's size */
     z-index: 1100; /* Higher than modals */
     display: flex;
     flex-direction: column-reverse; /* Stack toasts from bottom up */
     gap: 0.5rem;
+    pointer-events: none; /* Allow clicks to pass through container */
 }
 
 /* Individual toast notification styles */
@@ -568,13 +570,14 @@ main {
     background-color: rgba(50, 50, 50, 0.9); /* Semi-transparent dark background */
     color: white;
     padding: 0.75rem 1.25rem;
-    border-radius: 4px;
+    border-radius: 4px; /* Rounded corners */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     opacity: 0; /* Start invisible for fade-in */
     animation: toastFadeIn 0.3s ease-out forwards, toastFadeOut 0.5s ease-in forwards 2.5s; /* Fade in, stay, fade out */
     max-width: 300px; /* Limit width */
     word-wrap: break-word;
     overflow-wrap: break-word;
+    text-align: center; /* Center text */
 }
 
 /* Keyframe animation for toast fading in */
@@ -604,9 +607,10 @@ main {
 /* Media query for toast notifications on mobile */
 @media (max-width: 768px) {
     .toast {
-        bottom: 0.5rem;
-        left: 0.5rem;
-        right: 0.5rem;
+        /* Mobile specific styles if needed, but centering should work with the main rule */
+        /* bottom: 0.5rem; */
+        /* left: 0.5rem; */
+        /* right: 0.5rem; */
         max-width: none; /* Allow full width on small screens */
     }
 }
