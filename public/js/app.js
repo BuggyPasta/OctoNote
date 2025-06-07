@@ -189,14 +189,10 @@ async function loadExistingUsers() {
         const response = await fetch('/api/users');
         const users = await response.json();
         const existingUsers = document.getElementById('existingUsers');
-        existingUsers.innerHTML = users.map(user => `
-            <button class="user-button" data-username="${user}">
-                ${user}
-            </button>
-        `).join('');
+        existingUsers.innerHTML = `<div class="user-suggestions-container">${users.map(user => `<button class="user-name-option" data-username="${user}">${user}</button>`).join('')}</div>`;
 
         // Add click event listeners to all user buttons
-        document.querySelectorAll('.user-button').forEach(button => {
+        document.querySelectorAll('.user-name-option').forEach(button => {
             button.addEventListener('click', () => {
                 const username = button.getAttribute('data-username');
                 selectUser(username);
