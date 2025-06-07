@@ -512,12 +512,16 @@ main {
 
     /* Note actions layout for mobile (flex-wrap) */
     .note-actions {
-        flex-wrap: wrap;
+        flex-direction: row; /* Changed from column to row */
+        gap: 0.5rem;
+        flex-wrap: nowrap; /* Prevent wrapping */
     }
 
-    /* Action button adjustments for mobile */
     .action-button {
-        /* Adjustments if needed for mobile action buttons */
+        width: auto; /* Changed from 100% to auto */
+        flex: 1; /* Make buttons take equal space */
+        justify-content: center;
+        padding: 1rem 0.5rem; /* Slightly reduce padding on mobile */
     }
 
     /* Action button image adjustments for mobile */
