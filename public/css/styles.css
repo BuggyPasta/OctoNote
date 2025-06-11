@@ -1,0 +1,781 @@
+/* Variables for the color scheme - tailored for dark mode */
+:root {
+    --primary-color: #42A5F5; /* Vibrant Blue - Used for accents, titles, borders, and button text */
+    --header-bg: #00002D;
+    --button-bg: #2D2D44; /* Lighter Navy - General button background */
+    --button-hover: #1E1E2E; /* Hover state for general buttons */
+    --button-text: white;
+    --error-color: #B00;
+    --error-hover: #900;
+    --success-color: #029D09;
+    --success-hover: #017D07;
+    --text-primary: var(--primary-color); /* Example of using primary color for text */
+    --text-secondary: #00002d;
+
+    /* Assuming font family var exists or is defined elsewhere */
+    /* --font-family: 'Your Chosen Font', sans-serif; */
+
+    /* Icon filter for dark mode, assuming icons are white */
+    --icon-filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%);
+}
+
+/* General body styles */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background-color: #1a1a1a;
+    color: white;
+}
+
+/* App Container - main layout wrapper */
+.app-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header styles */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: var(--header-bg);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+/* Logo section */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Logo button style (if logo is clickable) */
+.logo-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+}
+
+/* Logo image styles */
+.logo-button img {
+    height: 3rem;
+    width: auto;
+}
+
+/* App Title styles */
+.app-title {
+    font-family: var(--font-family);
+    font-weight: bold;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+}
+
+/* Current user display styles */
+.current-user {
+    background-color: #42A5F5;
+    color: #00002D;
+    padding: 0.25rem 0.75rem;
+    border: 1px solid #00002D;
+    border-radius: 0 0 5px 5px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    z-index: 100;
+    display: block;
+    margin: 0 auto;
+    margin-top: -1.5rem;
+}
+
+.current-user.visible {
+    display: block;
+}
+
+/* Delete user button styles */
+.delete-user-button {
+    background-color: var(--error-color);
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 0.2rem 0.75rem;
+    font-size: 2.5rem;
+    line-height: 1;
+    border-radius: 5px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.delete-user-button:hover {
+    background-color: var(--error-hover);
+}
+
+/* Octo part of the title */
+.app-title .octo {
+    color: var(--primary-color);
+}
+
+/* Note part of the title */
+.app-title .note {
+    color: white;
+}
+
+/* Menu button style */
+.menu-button {
+    background: #42A5F5;
+    border: none;
+    padding: 0.75rem;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+/* Menu button image styles */
+.menu-button img {
+    height: 1.5rem;
+    width: auto;
+}
+
+/* Menu dropdown styles */
+.menu {
+    position: absolute;
+    top: 4rem;
+    right: 1rem;
+    background-color: var(--header-bg);
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+/* Hide class for the menu */
+.menu.hidden {
+    display: none;
+}
+
+/* Individual menu item styles */
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: none;
+    background: none;
+    color: white;
+    cursor: pointer;
+    text-align: left;
+}
+
+/* Menu item hover state */
+.menu-item:hover {
+    background-color: var(--button-bg);
+}
+
+/* Menu item image styles */
+.menu-item img {
+    height: 1.25rem;
+    width: auto;
+}
+
+/* Main content area */
+main {
+    flex: 1;
+    padding: 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+}
+
+/* Notes list grid layout */
+.notes-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+}
+
+/* Individual note card styles */
+.note-card {
+    background-color: #42A5F5;
+    border-radius: 8px;
+    padding: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-align: center;
+    border: 1px solid var(--primary-color);
+}
+
+/* Note card hover state */
+.note-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Note card title */
+.note-card h3 {
+    margin: 0 0 0.5rem 0;
+    color: #FFFFFF;
+    text-align: center;
+}
+
+/* Note card last edited text */
+.note-card p {
+    margin: 0;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+}
+
+/* Note Editor container */
+.note-editor {
+    padding: 1rem;
+}
+
+/* Hide class for the note editor */
+.note-editor.hidden {
+    display: none !important;
+}
+
+/* Note View - container for title, content, and actions */
+.note-view {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Note Title input field */
+.note-title {
+    font-size: 1.5rem;
+    padding: 1.5rem;
+    border: none;
+    border-radius: 4px;
+    background-color: #00002d;
+    color: #FFFFFF;
+    width: 100%;
+    box-sizing: border-box;
+    font-weight: bold;
+}
+
+/* Note Content textarea field */
+.note-content {
+    -webkit-text-size-adjust: 100%;
+    font-size: 16px;
+    flex: 1;
+    min-height: 300px;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #CCCCCC;
+    color: black;
+    resize: vertical;
+    width: 100%;
+    box-sizing: border-box;
+    font-weight: bold;
+    user-select: text;
+    -webkit-user-select: text;
+}
+
+/* Styles for note title and content when focused */
+.note-title:focus,
+.note-content:focus {
+    border: 5px solid #42A5F5;
+    outline: none;
+}
+
+/* Note Actions container - holds button rows */
+.note-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: space-between;
+    margin-top: 1rem;
+}
+
+/* Style for both rows of buttons */
+.note-actions .action-button {
+    flex: 1;
+}
+
+/* General action button styles (applies to all) */
+.action-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    background: #42A5F5;
+    border: 2px solid #00002d;
+    padding: 0.5rem;
+    cursor: pointer;
+    font-size: 0.8rem;
+    color: #00002d;
+    min-width: 60px;
+    text-align: center;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+/* Action button image styles */
+.action-button img {
+    height: 1.875rem;
+    width: 6rem;
+}
+
+/* Action button text label styles */
+.action-button span {
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+/* General modal overlay styles */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Hide class for modals */
+.modal.hidden {
+    display: none;
+}
+
+/* Modal content box styles */
+.modal-content {
+    background-color: #00002d;
+    padding: 2rem;
+    border-radius: 5px;
+    width: 90%;
+    max-width: 500px;
+    border: 5px solid #fff;
+}
+
+/* Modal heading styles */
+.modal-content h2 {
+    margin: 0 0 1rem 0;
+    color: var(--primary-color);
+    text-align: center;
+}
+
+/* Status Modal Specific Styles */
+#statusModal .modal-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    font-size: 1rem;
+}
+
+/* Status modal paragraph styles */
+#statusModal .modal-content p {
+    margin: 0;
+    padding: 0;
+    color: white;
+}
+
+/* Status modal strong text styles */
+#statusModal .modal-content p strong {
+    color: var(--primary-color);
+}
+
+/* Status Modal Actions container (for close button) */
+#statusModal .modal-actions {
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+/* Status Modal Close Button Style */
+#statusModal .modal-actions button { /* Target the button directly within modal-actions */
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    padding: 0.75rem 1.5rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    flex: none;
+    width: auto;
+}
+
+/* Status modal button hover */
+#statusModal .modal-actions button:hover {
+    background-color: var(--button-hover);
+}
+
+/* User Input section (e.g., for username modal) */
+.user-input {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+/* User input field styles */
+.user-input input {
+    flex: 1;
+    max-width: 300px;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 4px;
+    background-color: #2c3e50;
+    color: white;
+    touch-action: manipulation;
+    text-align: center;
+}
+
+/* User input button styles */
+.user-input button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    background-color: var(--primary-color);
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* Container for suggested usernames */
+.user-suggestions-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1rem;
+    width: 100%;
+}
+
+/* Style for selectable username buttons in the modal */
+.user-name-option {
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    padding: 0.75rem 1.25rem;
+    border-radius: 5px;
+    border: 1px solid var(--primary-color);
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background-color 0.2s, transform 0.1s;
+    flex-shrink: 0;
+    width: 75%;
+    text-align: center;
+}
+
+.user-name-option:hover {
+    background-color: var(--button-hover);
+}
+
+/* General modal actions container (for delete confirmation) */
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+/* Unsaved changes modal specific styles */
+.unsaved-changes-actions {
+    flex-direction: column;
+    width: 100%;
+}
+
+.unsaved-changes-actions .modal-button {
+    width: 100%;
+    margin: 0.5rem 0;
+    padding: 0.75rem;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.unsaved-changes-actions .modal-button.save {
+    background-color: #009900;
+    color: white;
+}
+
+.unsaved-changes-actions .modal-button.discard {
+    background-color: #bb0000;
+    color: white;
+}
+
+.unsaved-changes-actions .modal-button.continue {
+    background-color: #42A5F5;
+    color: #00002D;
+}
+
+/* Center align text in unsaved changes modal */
+#unsavedChangesModal .modal-content p {
+    text-align: center;
+}
+
+/* Media query for smaller screens (e.g., mobile) */
+@media (max-width: 768px) {
+    header {
+        flex-direction: row;
+        align-items: center;
+        padding: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .logo {
+        margin-bottom: 0;
+    }
+
+    .app-title {
+        flex-direction: row;
+        align-items: center;
+        text-align: left;
+    }
+
+    .current-user {
+        font-size: 0.7rem;
+        padding: 0.2rem 0.5rem;
+        margin-top: -1.5rem;
+    }
+    
+    .current-user.visible {
+        display: block;
+    }
+
+    /* Modal content adjustments for mobile */
+    .modal-content {
+        width: 90%;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+    /* Modal actions layout for mobile */
+    .modal-actions {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    /* Modal button adjustments for mobile */
+    .modal-button {
+        width: 100%;
+    }
+    /* Notes list layout for mobile (single column) */
+    .notes-list {
+        grid-template-columns: 1fr;
+        padding: 0.5rem;
+    }
+
+    /* Note card adjustments for mobile */
+    .note-card {
+        width: 100%;
+        margin: 0 auto;
+        padding: 0.75rem;
+        box-sizing: border-box;
+        max-width: calc(100% - 2rem);
+    }
+
+    /* Note card title adjustments for mobile */
+    .note-card h3 {
+        font-size: 1.1rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
+        margin: 0;
+        padding: 1rem 0.5rem;
+    }
+
+    /* Note card paragraph adjustments for mobile */
+    .note-card p {
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+    }
+
+    /* Note actions layout for mobile */
+    .note-actions {
+        flex-direction: row;
+        gap: 0.5rem;
+        flex-wrap: nowrap;
+    }
+
+    .action-button {
+        width: auto;
+        flex: 1;
+        justify-content: center;
+        padding: 1rem 0.5rem;
+    }
+
+    /* Action button image adjustments for mobile */
+    .action-button img {
+        width: 6rem;
+    }
+}
+
+/* Toast container styles */
+#toastContainer {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1100;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 0.5rem;
+    pointer-events: none;
+}
+
+/* Individual toast notification styles */
+.toast {
+    background-color: rgba(50, 50, 50, 0.9);
+    color: white;
+    padding: 0.75rem 1.25rem;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    opacity: 1;
+    animation: toastFadeOut 0.3s ease-in forwards 1.5s;
+    max-width: 300px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    text-align: center;
+}
+
+/* Keyframe animation for toast fading out */
+@keyframes toastFadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+}
+
+/* Media query for toast notifications on mobile */
+@media (max-width: 768px) {
+    .toast {
+        max-width: none;
+    }
+}
+
+/* Status Modal */
+.status-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--modal-bg);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    max-width: 90%;
+    width: 400px;
+    text-align: center;
+}
+
+.status-modal h2 {
+    color: var(--text-color);
+    margin-bottom: 1rem;
+}
+
+.status-modal p {
+    color: var(--text-color);
+    margin-bottom: 1.5rem;
+}
+
+.status-modal button {
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    padding: 0.75rem 1.25rem;
+    border-radius: 5px;
+    border: 1px solid var(--primary-color);
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.status-modal button:hover {
+    background-color: var(--button-hover);
+}
+
+/* User name option container */
+.user-name-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    justify-content: center;
+}
+
+/* Transfer dialog styles */
+.transfer-dropdown-container {
+    margin: 1rem 0;
+    width: 100%;
+}
+
+#transferUserSelect {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--primary-color);
+    border-radius: 4px;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    font-size: 1rem;
+}
+
+#transferUserSelect:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Footer styles */
+footer {
+    text-align: center;
+    padding: 1rem 0;
+    margin-top: auto;
+    color: #CCCCCC;
+    font-size: 0.9rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.footer-line {
+    border-top: 1px solid #666666;
+    width: 95%;
+    margin: 0 auto 0.5rem auto;
+}
+
+footer a {
+    color: #42A5F5;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* Hide class for the notes list */
+.notes-list.hidden {
+    display: none !important;
+}
+
+/* Prevent zooming on double-tap */
+* {
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+}

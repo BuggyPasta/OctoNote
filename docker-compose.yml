@@ -1,0 +1,32 @@
+services:
+  octonote:
+    build:
+      context: https://github.com/BuggyPasta/OctoNote.git
+      dockerfile: Dockerfile
+    container_name: octonote
+    restart: unless-stopped
+    ports:
+      - "51828:51828"
+    volumes:
+      - /home/user/docker_backup/octonote:/data/octonote
+    environment:
+      - NODE_ENV=production
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:51828/api/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - octonote_network
+    labels:
+      com.centurylinklabs.watchtower.enable: "false"
+
+volumes:
+  octonote_data:
+    name: octonote_data
+
+networks:
+  octonote_network:
+    name: octonote_network
+    driver: bridge

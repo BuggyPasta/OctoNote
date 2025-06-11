@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>OctoNote</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="icon" type="image/svg+xml" href="/icons/octonote.svg">
+</head>
+<body class="app-container">
+    <header>
+        <div class="logo">
+            <button id="homeButton" class="logo-button">
+                <img src="/icons/octonote.svg" alt="OctoNote Logo">
+                <span class="app-title"><span class="octo">Octo</span><span class="note">Note</span></span>
+            </button>
+        </div>
+        <button id="menuButton" class="menu-button">
+            <img src="/icons/menu.svg" alt="Menu">
+        </button>
+    </header>
+    <div id="currentUserDisplay" class="current-user"></div>
+
+    <div id="menu" class="menu hidden">
+        <button id="newNoteButton" class="menu-item">
+            <img src="/icons/note_add.svg" alt="New Note">
+            Create New Note
+        </button>
+        <button id="statusButton" class="menu-item">
+            <img src="/icons/status.svg" alt="Status">
+            Status
+        </button>
+        <button id="userSwitchButton" class="menu-item">
+            <img src="/icons/user.svg" alt="Users">
+            Users
+        </button>
+    </div>
+
+    <main>
+        <div id="notesList" class="notes-list">
+            <!-- Notes will be populated here -->
+        </div>
+
+        <div id="noteEditor" class="note-editor hidden">
+            <div class="note-view">
+                <input type="text" id="noteTitle" class="note-title" placeholder="Title">
+                <textarea id="noteContent" class="note-content" placeholder="Replace this with your note..."></textarea>
+                <div class="note-actions">
+                    <button id="saveButton" class="action-button" title="Save">
+                        <img src="/icons/save.svg" alt="Save">
+                        <span>Save</span>
+                    </button>
+                    <button id="undoButton" class="action-button" title="Undo">
+                        <img src="/icons/undo.svg" alt="Undo">
+                        <span>Undo</span>
+                    </button>
+                </div>
+                <div class="note-actions">
+                    <button id="copyButton" class="action-button" title="Copy to Clipboard">
+                        <img src="/icons/copy.svg" alt="Copy">
+                        <span>Copy</span>
+                    </button>
+                    <button id="deleteButton" class="action-button" title="Delete Note">
+                        <img src="/icons/note_delete.svg" alt="Delete">
+                        <span>Delete Note</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="deleteConfirmModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Delete Note</h2>
+            <p>Are you sure you want to delete this note? This action is not reversible!</p>
+            <div class="modal-actions unsaved-changes-actions">
+                <button id="cancelDeleteButton" class="modal-button save">No, do NOT delete it</button>
+                <button id="confirmDeleteButton" class="modal-button discard">Yes, delete it for ever</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="unsavedChangesModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Unsaved Changes</h2>
+            <p>You have unsaved changes in your note. What would you like to do?</p>
+            <div class="modal-actions unsaved-changes-actions">
+                <button id="saveChangesButton" class="modal-button save">Save my changes</button>
+                <button id="discardChangesButton" class="modal-button discard">Discard all unsaved changes</button>
+                <button id="continueEditingButton" class="modal-button continue">Close this and let me continue editing</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="userModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Choose a User or Create a New one</h2>
+            <div id="existingUsers"></div>
+            <div class="user-input">
+                <input type="text" id="newUserName" placeholder="Enter new name">
+                <button id="createUserButton">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="statusModal" class="modal hidden">
+        <div class="modal-content">
+            <div id="statusContent"></div>
+        </div>
+    </div>
+
+    <div id="transferDialog" class="modal hidden">
+        <div class="modal-content">
+            <h2>Transfer Notes</h2>
+            <p id="transferNoteCount"></p>
+            <div class="transfer-dropdown-container">
+                <select id="transferUserSelect">
+                    <option value="">Select a user...</option>
+                </select>
+            </div>
+            <div class="modal-actions unsaved-changes-actions">
+                <button id="cancelTransferButton" class="modal-button save">Cancel this, I want to keep this user</button>
+                <button id="confirmTransferButton" class="modal-button discard">Transfer this user's notes, then delete the user</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastContainer"></div>
+
+    <script src="/js/app.js"></script>
+    <footer>
+        <div class="footer-line"></div>
+        <p>Created by <a href="https://github.com/BuggyPasta" target="_blank">BuggyPasta</a> | <a href="https://github.com/BuggyPasta/OctoNote" target="_blank">GitHub</a></p>
+    </footer>
+</body>
+</html> 
